@@ -1,0 +1,41 @@
+# Weekly upkeep: widen what we watch, and keep storage inside its budget.
+
+name: maintain
+
+on:
+  schedule:
+    - cron: "43 4 * * 1"
+  workflow_dispatch:
+
+concurrency:
+  group: observe # shares the ingestion lock; both spend the same API quota
+  cancel-in-progress: false
+
+jobs:
+  maintain:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      DATABASE_URL_DIRECT: ${{ secrets.DATABASE_URL_DIRECT }}
+      GITHUB_TOKEN: ${{ secrets.IW_GITHUB_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+
+      - run: uv sync --locked
+
+      - name: Reconcile the curated universe
+        # Picks up editorial changes to db/seed/technology_universe.yml.
+        run: uv run python -m workers.seed.load_universe
+
+      - name: Discover candidate repositories
+        # Candidates are proposed at ECOSYSTEM weight, never adopted
+        # automatically. Promotion is an edit to the YAML.
+        run: uv run python -m workers.github.discover
+
+      - name: Prune expired data
+        if: always()
+        run: uv run python -m workers.retention.prune

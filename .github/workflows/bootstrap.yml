@@ -1,0 +1,51 @@
+# One-off setup, run by hand. Never scheduled.
+#
+# Order matters: technologies, then repository identities, then the historical
+# star curve for headline technologies, then the first signal computation.
+
+name: bootstrap
+
+on:
+  workflow_dispatch:
+    inputs:
+      migrate:
+        description: Apply database migrations
+        type: boolean
+        default: true
+      backfill:
+        description: Backfill star history for headline technologies (expensive, once)
+        type: boolean
+        default: false
+
+jobs:
+  bootstrap:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    env:
+      DATABASE_URL_DIRECT: ${{ secrets.DATABASE_URL_DIRECT }}
+      GITHUB_TOKEN: ${{ secrets.IW_GITHUB_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+
+      - run: uv sync --locked
+
+      - name: Migrate
+        if: ${{ inputs.migrate }}
+        run: uv run alembic upgrade head
+
+      - name: Load the technology universe
+        run: uv run python -m workers.seed.load_universe
+
+      - name: Resolve repository identities
+        run: uv run python -m workers.github.resolve
+
+      - name: Backfill headline star history
+        if: ${{ inputs.backfill }}
+        run: uv run python -m workers.github.backfill_stars
+
+      - name: Compute the first signals
+        run: uv run python -m workers.detection.compute_signals

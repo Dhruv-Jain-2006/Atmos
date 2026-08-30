@@ -1,0 +1,41 @@
+# ── Python ───────────────────────────────────────────────────────────────────
+.venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
+*.egg-info/
+
+# ── Node / Next.js ───────────────────────────────────────────────────────────
+node_modules/
+.next/
+next-env.d.ts
+*.tsbuildinfo
+
+# ── Secrets ──────────────────────────────────────────────────────────────────
+.env
+.env.local
+.env.*.local
+
+# ── Generated but committed ──────────────────────────────────────────────────
+# docs/openapi.json and frontend/lib/types.gen.ts are deliberately NOT ignored.
+# The frontend must build without a running backend, and a committed contract
+# means schema drift arrives as a reviewable diff instead of a runtime surprise.
+# Regenerate with: uv run python scripts/dump_openapi.py && npm --prefix frontend run codegen
+
+# ── Editors / OS ─────────────────────────────────────────────────────────────
+.vscode/
+.idea/
+Thumbs.db
+desktop.ini
+.DS_Store
+
+# ── Local AI-agent tooling (not part of the project) ─────────────────────────
+.agent/
+.agents/
+.claude/
+.codex/
+.copilot/
+.gemini/
+.impeccable/
+.opencode/

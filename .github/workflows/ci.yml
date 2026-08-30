@@ -1,0 +1,65 @@
+name: ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  backend:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+
+      - name: Install Python and dependencies
+        run: uv sync --locked --all-groups
+
+      - name: Lint
+        run: uv run ruff check .
+
+      - name: Test
+        # No DATABASE_URL is set. Every test is designed to pass without one:
+        # the schema is proven by offline DDL rendering, the classifier is pure,
+        # and the API's degraded mode is a tested product state.
+        run: uv run pytest -q
+
+      - name: Render migrations without a database
+        # Proves the migration chain applies cleanly and produces the DDL the
+        # models describe, with no Postgres in the runner.
+        run: uv run alembic upgrade head --sql > /dev/null
+
+      - name: Validate the technology universe
+        run: uv run python -m workers.seed.load_universe --dry-run
+
+  frontend:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: frontend
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+
+      - run: npm ci
+
+      - run: npm run lint
+
+      - name: Build
+        # Builds against the API contract, not a live API. Trends renders its
+        # "awaiting first observation" state when the backend has no data.
+        run: npm run build

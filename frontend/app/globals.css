@@ -1,0 +1,292 @@
+@import "tailwindcss";
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   Design tokens
+
+   The interface is an instrument, not a marketing page: a dark field, a faint
+   graticule, monospace readouts, and colour reserved for meaning. Every hue
+   below is bound to a computed weather state — nothing is decorative.
+   ───────────────────────────────────────────────────────────────────────────── */
+
+@theme {
+  /* Field */
+  --color-void: #05070b;
+  --color-deep: #080b12;
+  --color-panel: #0a0e16;
+  --color-grid: #0f1522;
+  --color-edge: #18202e;
+  --color-edge-lit: #26324a;
+
+  /* Ink */
+  --color-ink: #e9eff8;
+  --color-dim: #94a2b8;
+  --color-faint: #5d6b84;
+  --color-ghost: #333f55;
+
+  /* Weather states. Keys match the API's WeatherState vocabulary exactly. */
+  --color-hot: #ff9142;
+  --color-emerging: #3ddc97;
+  --color-stable: #8296b3;
+  --color-cooling: #4cc3f0;
+  --color-breaking: #b18cff;
+  --color-storm: #ff5470;
+
+  /* Instrument accent, used for scales and the sweep — never for data. */
+  --color-signal: #6fd0f5;
+
+  --font-sans: var(--font-display), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-readout), ui-monospace, "SF Mono", monospace;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   Field
+   ───────────────────────────────────────────────────────────────────────────── */
+
+html {
+  color-scheme: dark;
+  background-color: var(--color-void);
+}
+
+body {
+  background-color: var(--color-void);
+  color: var(--color-ink);
+  /* The graticule: two hairline grids at different pitches, plus a soft radial
+     vignette so the centre of the field reads brighter than its edges. */
+  background-image:
+    linear-gradient(to right, var(--color-grid) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--color-grid) 1px, transparent 1px),
+    radial-gradient(
+      ellipse 80% 60% at 50% 0%,
+      color-mix(in oklab, var(--color-signal) 6%, transparent),
+      transparent 70%
+    );
+  background-size:
+    64px 64px,
+    64px 64px,
+    100% 100%;
+  background-attachment: fixed;
+  -webkit-font-smoothing: antialiased;
+}
+
+::selection {
+  background-color: color-mix(in oklab, var(--color-signal) 30%, transparent);
+}
+
+/* Scale marks used along axes and band headers. */
+.hairline {
+  background-image: repeating-linear-gradient(
+    to right,
+    var(--color-edge) 0 1px,
+    transparent 1px 6px
+  );
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   Weather-state colour binding
+
+   A single `data-state` attribute resolves --state for everything inside. This
+   keeps one mapping in one place instead of a colour class per state per
+   component, and it means a new state needs one line here.
+   ───────────────────────────────────────────────────────────────────────────── */
+
+[data-state] {
+  --state: var(--color-stable);
+}
+[data-state="hot"] {
+  --state: var(--color-hot);
+}
+[data-state="emerging"] {
+  --state: var(--color-emerging);
+}
+[data-state="stable"] {
+  --state: var(--color-stable);
+}
+[data-state="cooling"] {
+  --state: var(--color-cooling);
+}
+[data-state="breaking"] {
+  --state: var(--color-breaking);
+}
+[data-state="storm"] {
+  --state: var(--color-storm);
+}
+
+/* Every consumer supplies the same fallback. Without it an element rendered
+   outside any `data-state` ancestor resolves `var(--state)` to nothing, the
+   declaration becomes invalid at computed-value time, and an SVG shape falls
+   back to black — a silent, very visible failure. */
+.st-text {
+  color: var(--state, var(--color-stable));
+}
+.st-fill {
+  background-color: var(--state, var(--color-stable));
+}
+.st-wash {
+  background-color: color-mix(in oklab, var(--state, var(--color-stable)) 10%, transparent);
+}
+.st-edge {
+  border-color: color-mix(in oklab, var(--state, var(--color-stable)) 34%, transparent);
+}
+.st-glow {
+  box-shadow: 0 0 26px -8px color-mix(in oklab, var(--state, var(--color-stable)) 55%, transparent);
+}
+.st-stroke {
+  stroke: var(--state, var(--color-stable));
+}
+/* SVG counterpart to .st-fill. Separate because `background-color` is inert on
+   an SVG shape, and a chart that silently renders unpainted rectangles is worse
+   than one that does not compile. */
+.st-paint {
+  fill: var(--state, var(--color-stable));
+}
+
+/* Epistemic standing. Anything below OBSERVATION is visibly held at arm's
+   length — this is the CLAUDE.md rule "never present speculation as fact"
+   expressed in the interface rather than only in the payload. */
+[data-epistemic="inference"],
+[data-epistemic="hypothesis"] {
+  --epistemic: var(--color-signal);
+}
+[data-epistemic="unknown"] {
+  --epistemic: var(--color-faint);
+}
+[data-epistemic="observation"] {
+  --epistemic: var(--color-dim);
+}
+.ep-text {
+  color: var(--epistemic, var(--color-dim));
+}
+.ep-edge {
+  border-color: color-mix(in oklab, var(--epistemic, var(--color-dim)) 40%, transparent);
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   Typography scale
+
+   Readouts are instruments: monospace for digit alignment, tabular-nums to
+   prevent layout shift, and a size hierarchy that lets the eye find the
+   dominant signal without reading every number.
+   ───────────────────────────────────────────────────────────────────────────── */
+
+.text-lead {
+  font-size: 1rem;
+  line-height: 1.35;
+  letter-spacing: -0.01em;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   Observation coverage indicators
+
+   The observatory must distinguish "we have not watched long enough" from
+   "we have a confident reading". These classes bind that distinction to color
+   without requiring a new component per state.
+   ───────────────────────────────────────────────────────────────────────────── */
+
+.coverage-thin {
+  color: var(--color-faint);
+}
+.coverage-ok {
+  color: var(--color-dim);
+}
+.coverage-strong {
+  color: var(--color-emerging);
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   Motion
+
+   Animation is here to communicate state, per CLAUDE.md: the sweep says "still
+   observing", the scan-in says "this row just arrived". Both stop entirely for
+   users who ask for reduced motion.
+   ───────────────────────────────────────────────────────────────────────────── */
+
+@keyframes sweep {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes scan-in {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes pulse-soft {
+  0%,
+  100% {
+    opacity: 0.35;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+.radar-sweep {
+  position: absolute;
+  inset: -60%;
+  pointer-events: none;
+  border-radius: 9999px;
+  background: conic-gradient(
+    from 0deg,
+    transparent 0deg,
+    color-mix(in oklab, var(--color-signal) 16%, transparent) 24deg,
+    transparent 60deg
+  );
+  animation: sweep 14s linear infinite;
+  mask-image: radial-gradient(circle at center, black 45%, transparent 72%);
+}
+
+.scan-in {
+  animation: scan-in 320ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.live-dot {
+  animation: pulse-soft 2.4s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .radar-sweep,
+  .scan-in,
+  .live-dot {
+    animation: none;
+  }
+  .radar-sweep {
+    opacity: 0.25;
+  }
+  .scan-in {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* Radix HoverCard entry. Fast and small — a preview should feel like an
+   instrument tooltip, not a modal. */
+@keyframes preview-in {
+  from {
+    opacity: 0;
+    transform: translateY(-2px) scale(0.985);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.preview-panel {
+  animation: preview-in 140ms ease-out;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .preview-panel {
+    animation: none;
+  }
+}

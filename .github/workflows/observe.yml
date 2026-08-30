@@ -1,0 +1,60 @@
+# The OBSERVE and DETECT stages of the product loop, on a schedule.
+#
+# Cadence is chosen against three separate free-tier budgets, not by taste:
+#
+#   GitHub Actions  private repos get 2,000 minutes/month. 8 runs/day at ~3
+#                   minutes is ~720 minutes/month, leaving room for CI.
+#   Neon compute    the database must idle. 8 short wakes/day is a few CU-hours
+#                   a month against a much larger allowance.
+#   GitHub API      5,000 requests/hour on a PAT. Each run is budgeted below
+#                   that ceiling and stops deliberately rather than throttling.
+#
+# Daily rollups do not need hourly polling. Eight observations a day is enough
+# to place a change on the right day, which is the resolution the product claims.
+
+name: observe
+
+on:
+  schedule:
+    - cron: "17 */3 * * *"
+  workflow_dispatch:
+    inputs:
+      budget:
+        description: API request budget for this run
+        default: "800"
+
+concurrency:
+  # Two ingestion runs at once would double-spend quota and race on the daily
+  # upsert. Queue instead of cancelling: a partial run has already recorded a
+  # cursor worth resuming from.
+  group: observe
+  cancel-in-progress: false
+
+jobs:
+  observe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      DATABASE_URL_DIRECT: ${{ secrets.DATABASE_URL_DIRECT }}
+      # A personal access token, NOT the Actions-provided GITHUB_TOKEN, which is
+      # capped at 1,000 requests/hour per repository against 5,000 for a PAT.
+      GITHUB_TOKEN: ${{ secrets.IW_GITHUB_TOKEN }}
+      LOG_LEVEL: INFO
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+
+      - run: uv sync --locked
+
+      - name: Sync repository metrics
+        run: uv run python -m workers.github.sync_metrics --budget ${{ inputs.budget || 800 }}
+
+      - name: Compute signals and weather states
+        # Runs even if ingestion stopped early on quota: yesterday's facts still
+        # produce today's signals, and the classifier reports lower confidence
+        # rather than pretending.
+        if: always()
+        run: uv run python -m workers.detection.compute_signals

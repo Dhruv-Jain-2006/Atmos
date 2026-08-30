@@ -1,0 +1,690 @@
+# Internet Weather — AI Engineering Technology Universe
+#
+# This file is the EDITORIAL SPINE of the product, not a test fixture.
+#
+# It defines the curated set of technologies we observe and the high-signal
+# repositories that act as sensors for each one. The discovery worker expands
+# beyond this seed using each technology's `discovery` block; it never invents
+# technologies on its own.
+#
+# ── Conventions ──────────────────────────────────────────────────────────────
+#   slug        Stable public identifier — appears in URLs (/research/<slug>).
+#               NEVER rename a slug; retire it instead.
+#
+#   headline    Receives the one-time curated star-history backfill so the
+#               technology has a real trend line on day one.
+#               KEEP THIS SET SMALL AND MID-SIZED. Backfill paginates the
+#               stargazers API at 100/page, so a 140k-star repo costs ~1,400
+#               requests against a 5,000/hour budget. Headline repos are chosen
+#               for high momentum at moderate size — where the trend story is
+#               both interesting and affordable — not for raw popularity.
+#
+#   relation    canonical      the reference implementation / specification
+#               implementation an independent implementation or major port
+#               integration    binds the technology to another ecosystem
+#               ecosystem      community tooling, awesome-lists, UIs, docs
+#
+#   weight      Contribution of this repo to the technology's aggregate signal.
+#               Stops a large ecosystem repo from drowning out the spec repo.
+#               canonical 1.0 · implementation 0.6 · integration 0.4 · ecosystem 0.25
+#
+# ── Curation rules ───────────────────────────────────────────────────────────
+#   1. One slug = one technology. Do NOT create category buckets such as
+#      "vector-databases" — averaging an accelerating and a cooling member
+#      produces a meaningless momentum figure.
+#   2. Every `full_name` here is verified to resolve on GitHub. Renames are
+#      corrected in this file, but the database keys repositories on the
+#      immutable GitHub numeric id, because repos get renamed and transferred
+#      (9 of the original 140 entries had moved when this seed was written).
+#   3. Prefer repos whose activity genuinely reflects the technology's health.
+
+version: 1
+domain: ai-engineering
+updated: "2026-08-26"
+
+subdomains:
+  agentic_ai:
+    name: Agentic AI
+    description: Agent frameworks, orchestration, tool-use protocols, autonomous workflows.
+  llm_ecosystem:
+    name: LLMs & Model Ecosystems
+    description: Open-weight model families, training and fine-tuning stacks, model libraries.
+  rag:
+    name: RAG & Knowledge Systems
+    description: Retrieval pipelines, vector stores, document processing, retrieval evaluation.
+  ai_infra:
+    name: AI Infrastructure & Inference
+    description: Serving engines, runtimes, gateways, schedulers, local inference.
+  multimodal:
+    name: Multimodal AI
+    description: Speech, vision, image and video generation.
+  mlops:
+    name: MLOps & Observability
+    description: Experiment tracking, tracing, evaluation, model registries, deployment.
+  ai_security:
+    name: AI Security
+    description: Red-teaming, guardrails, prompt-injection defence, model supply chain.
+
+technologies:
+
+  # ═══════════════════════════ Agentic AI ═══════════════════════════
+
+  - slug: mcp
+    name: Model Context Protocol
+    subdomain: agentic_ai
+    headline: true
+    aliases: ["MCP", "model context protocol"]
+    summary: Open protocol standardising how applications supply context and tools to LLMs.
+    discovery:
+      topics: [mcp, model-context-protocol, mcp-server]
+      orgs: [modelcontextprotocol]
+      queries: ["model context protocol server"]
+    repositories:
+      - { full_name: modelcontextprotocol/modelcontextprotocol, relation: canonical, weight: 1.0 }
+      - { full_name: modelcontextprotocol/servers, relation: canonical, weight: 1.0 }
+      - { full_name: modelcontextprotocol/python-sdk, relation: implementation, weight: 0.6 }
+      - { full_name: modelcontextprotocol/typescript-sdk, relation: implementation, weight: 0.6 }
+      - { full_name: modelcontextprotocol/go-sdk, relation: implementation, weight: 0.6 }
+      - { full_name: modelcontextprotocol/rust-sdk, relation: implementation, weight: 0.6 }
+      - { full_name: modelcontextprotocol/java-sdk, relation: implementation, weight: 0.6 }
+      - { full_name: modelcontextprotocol/kotlin-sdk, relation: implementation, weight: 0.6 }
+      - { full_name: modelcontextprotocol/csharp-sdk, relation: implementation, weight: 0.6 }
+      - { full_name: modelcontextprotocol/swift-sdk, relation: implementation, weight: 0.6 }
+      - { full_name: modelcontextprotocol/ruby-sdk, relation: implementation, weight: 0.6 }
+      - { full_name: modelcontextprotocol/inspector, relation: ecosystem, weight: 0.25 }
+      - { full_name: modelcontextprotocol/registry, relation: ecosystem, weight: 0.25 }
+      - { full_name: modelcontextprotocol/docs, relation: ecosystem, weight: 0.25 }
+      - { full_name: punkpeye/awesome-mcp-servers, relation: ecosystem, weight: 0.25 }
+
+  - slug: langgraph
+    name: LangGraph
+    subdomain: agentic_ai
+    headline: true
+    aliases: ["langgraph"]
+    summary: Graph-based runtime for stateful, multi-actor LLM agent workflows.
+    discovery:
+      topics: [langgraph]
+      orgs: [langchain-ai]
+    repositories:
+      - { full_name: langchain-ai/langgraph, relation: canonical, weight: 1.0 }
+      - { full_name: langchain-ai/langgraphjs, relation: implementation, weight: 0.6 }
+      - { full_name: langchain-ai/open_deep_research, relation: ecosystem, weight: 0.25 }
+      - { full_name: langchain-ai/deepagents, relation: ecosystem, weight: 0.25 }
+
+  - slug: autogen
+    name: AutoGen
+    subdomain: agentic_ai
+    aliases: ["autogen", "ag2"]
+    summary: Microsoft framework for multi-agent conversation and orchestration.
+    discovery:
+      topics: [autogen, multi-agent]
+      orgs: [microsoft]
+    repositories:
+      - { full_name: microsoft/autogen, relation: canonical, weight: 1.0 }
+
+  - slug: crewai
+    name: CrewAI
+    subdomain: agentic_ai
+    aliases: ["crewai", "crew ai"]
+    summary: Role-based multi-agent framework organised around crews and tasks.
+    discovery:
+      topics: [crewai, agents]
+      orgs: [crewAIInc]
+    repositories:
+      - { full_name: crewAIInc/crewAI, relation: canonical, weight: 1.0 }
+      - { full_name: crewAIInc/crewAI-tools, relation: ecosystem, weight: 0.25 }
+      - { full_name: crewAIInc/crewAI-examples, relation: ecosystem, weight: 0.25 }
+
+  - slug: openai-agents
+    name: OpenAI Agents SDK
+    subdomain: agentic_ai
+    aliases: ["openai agents", "swarm"]
+    summary: OpenAI's agent runtime with handoffs, guardrails and tracing.
+    discovery:
+      topics: [openai, agents]
+      orgs: [openai]
+    repositories:
+      - { full_name: openai/openai-agents-python, relation: canonical, weight: 1.0 }
+      - { full_name: openai/openai-agents-js, relation: implementation, weight: 0.6 }
+      - { full_name: openai/swarm, relation: ecosystem, weight: 0.25 }
+
+  - slug: browser-use
+    name: Browser Use
+    subdomain: agentic_ai
+    headline: true
+    aliases: ["browser-use", "browser agent"]
+    summary: Browser automation layer that lets agents drive real web pages.
+    discovery:
+      topics: [browser-use, browser-automation, ai-agents]
+      orgs: [browser-use]
+    repositories:
+      - { full_name: browser-use/browser-use, relation: canonical, weight: 1.0 }
+      - { full_name: browser-use/web-ui, relation: ecosystem, weight: 0.25 }
+
+  - slug: smolagents
+    name: smolagents
+    subdomain: agentic_ai
+    aliases: ["smolagents"]
+    summary: Hugging Face minimal agent library centred on code-writing agents.
+    discovery:
+      topics: [smolagents, agents]
+      orgs: [huggingface]
+    repositories:
+      - { full_name: huggingface/smolagents, relation: canonical, weight: 1.0 }
+
+  - slug: pydantic-ai
+    name: Pydantic AI
+    subdomain: agentic_ai
+    aliases: ["pydantic-ai", "pydanticai"]
+    summary: Type-safe agent framework built on Pydantic validation.
+    discovery:
+      topics: [pydantic, agents, llm]
+      orgs: [pydantic]
+    repositories:
+      - { full_name: pydantic/pydantic-ai, relation: canonical, weight: 1.0 }
+      - { full_name: pydantic/logfire, relation: integration, weight: 0.4 }
+
+  - slug: dify
+    name: Dify
+    subdomain: agentic_ai
+    headline: true
+    aliases: ["dify"]
+    summary: Visual platform for building and operating LLM applications and agent flows.
+    discovery:
+      topics: [dify, llmops, agent, workflow]
+      orgs: [langgenius]
+    repositories:
+      - { full_name: langgenius/dify, relation: canonical, weight: 1.0 }
+      - { full_name: langgenius/dify-sandbox, relation: implementation, weight: 0.6 }
+      - { full_name: langgenius/dify-docs, relation: ecosystem, weight: 0.25 }
+
+  # ═════════════════════ LLMs & Model Ecosystems ═════════════════════
+
+  - slug: transformers
+    name: Hugging Face Transformers
+    subdomain: llm_ecosystem
+    aliases: ["transformers", "huggingface transformers"]
+    summary: Reference library for pretrained transformer architectures and pipelines.
+    discovery:
+      topics: [transformers, nlp, pytorch]
+      orgs: [huggingface]
+    repositories:
+      - { full_name: huggingface/transformers, relation: canonical, weight: 1.0 }
+      - { full_name: huggingface/tokenizers, relation: implementation, weight: 0.6 }
+      - { full_name: huggingface/accelerate, relation: implementation, weight: 0.6 }
+      - { full_name: huggingface/huggingface_hub, relation: implementation, weight: 0.6 }
+      - { full_name: huggingface/candle, relation: implementation, weight: 0.6 }
+      - { full_name: safetensors/safetensors, relation: implementation, weight: 0.6 }
+      - { full_name: huggingface/peft, relation: integration, weight: 0.4 }
+      - { full_name: huggingface/trl, relation: integration, weight: 0.4 }
+      - { full_name: huggingface/datasets, relation: integration, weight: 0.4 }
+      - { full_name: huggingface/optimum, relation: integration, weight: 0.4 }
+      - { full_name: huggingface/text-embeddings-inference, relation: integration, weight: 0.4 }
+      - { full_name: huggingface/nanotron, relation: integration, weight: 0.4 }
+      - { full_name: huggingface/setfit, relation: ecosystem, weight: 0.25 }
+      - { full_name: huggingface/lighteval, relation: ecosystem, weight: 0.25 }
+
+  - slug: llama
+    name: Llama
+    subdomain: llm_ecosystem
+    aliases: ["llama", "meta llama"]
+    summary: Meta's open-weight model family and its official tooling.
+    discovery:
+      topics: [llama, llm]
+      orgs: [meta-llama]
+    repositories:
+      - { full_name: meta-llama/llama-models, relation: canonical, weight: 1.0 }
+      - { full_name: meta-llama/codellama, relation: implementation, weight: 0.6 }
+      # Formerly meta-llama/llama-stack — transferred and renamed to ogx-ai/ogx.
+      - { full_name: ogx-ai/ogx, relation: implementation, weight: 0.6 }
+      - { full_name: meta-llama/PurpleLlama, relation: integration, weight: 0.4 }
+      - { full_name: meta-llama/llama-cookbook, relation: ecosystem, weight: 0.25 }
+
+  - slug: qwen
+    name: Qwen
+    subdomain: llm_ecosystem
+    aliases: ["qwen", "qwen3", "tongyi"]
+    summary: Alibaba's open-weight model family spanning text, vision, code and agents.
+    discovery:
+      topics: [qwen, llm]
+      orgs: [QwenLM]
+    repositories:
+      - { full_name: QwenLM/Qwen3, relation: canonical, weight: 1.0 }
+      - { full_name: QwenLM/Qwen3-Coder, relation: implementation, weight: 0.6 }
+      - { full_name: QwenLM/Qwen3-VL, relation: integration, weight: 0.4 }
+      - { full_name: QwenLM/Qwen-Image, relation: integration, weight: 0.4 }
+      - { full_name: QwenLM/Qwen-Agent, relation: integration, weight: 0.4 }
+
+  - slug: deepseek
+    name: DeepSeek
+    subdomain: llm_ecosystem
+    headline: true
+    aliases: ["deepseek", "deepseek-r1", "deepseek-v3"]
+    summary: DeepSeek's open-weight reasoning models and low-level inference kernels.
+    discovery:
+      topics: [deepseek, llm, reasoning]
+      orgs: [deepseek-ai]
+    repositories:
+      - { full_name: deepseek-ai/DeepSeek-V3, relation: canonical, weight: 1.0 }
+      - { full_name: deepseek-ai/DeepSeek-R1, relation: canonical, weight: 1.0 }
+      - { full_name: deepseek-ai/DeepSeek-Coder, relation: implementation, weight: 0.6 }
+      - { full_name: deepseek-ai/DeepSeek-VL2, relation: integration, weight: 0.4 }
+      - { full_name: deepseek-ai/FlashMLA, relation: integration, weight: 0.4 }
+      - { full_name: deepseek-ai/DeepEP, relation: integration, weight: 0.4 }
+      - { full_name: deepseek-ai/DeepGEMM, relation: integration, weight: 0.4 }
+
+  - slug: mistral
+    name: Mistral
+    subdomain: llm_ecosystem
+    aliases: ["mistral", "mixtral"]
+    summary: Mistral AI's open-weight models and inference tooling.
+    discovery:
+      topics: [mistral, llm]
+      orgs: [mistralai]
+    repositories:
+      - { full_name: mistralai/mistral-inference, relation: canonical, weight: 1.0 }
+      - { full_name: mistralai/mistral-common, relation: implementation, weight: 0.6 }
+      - { full_name: mistralai/client-python, relation: integration, weight: 0.4 }
+
+  - slug: gemma
+    name: Gemma
+    subdomain: llm_ecosystem
+    aliases: ["gemma"]
+    summary: Google DeepMind's open-weight model family.
+    discovery:
+      topics: [gemma, llm]
+      orgs: [google-deepmind]
+    repositories:
+      - { full_name: google-deepmind/gemma, relation: canonical, weight: 1.0 }
+
+  - slug: dspy
+    name: DSPy
+    subdomain: llm_ecosystem
+    aliases: ["dspy"]
+    summary: Framework for programming — rather than prompting — language models.
+    discovery:
+      topics: [dspy, prompt-optimization]
+      orgs: [stanfordnlp]
+    repositories:
+      - { full_name: stanfordnlp/dspy, relation: canonical, weight: 1.0 }
+
+  - slug: unsloth
+    name: Unsloth
+    subdomain: llm_ecosystem
+    aliases: ["unsloth"]
+    summary: Memory-efficient fine-tuning kernels for open-weight LLMs.
+    discovery:
+      topics: [unsloth, fine-tuning, lora, qlora]
+      orgs: [unslothai]
+    repositories:
+      - { full_name: unslothai/unsloth, relation: canonical, weight: 1.0 }
+      - { full_name: unslothai/notebooks, relation: ecosystem, weight: 0.25 }
+
+  # ═════════════════════ RAG & Knowledge Systems ═════════════════════
+
+  - slug: langchain
+    name: LangChain
+    subdomain: rag
+    aliases: ["langchain"]
+    summary: Composable framework for LLM application and retrieval pipelines.
+    discovery:
+      topics: [langchain, llm, rag]
+      orgs: [langchain-ai]
+    repositories:
+      - { full_name: langchain-ai/langchain, relation: canonical, weight: 1.0 }
+      - { full_name: langchain-ai/langchainjs, relation: implementation, weight: 0.6 }
+      - { full_name: langchain-ai/langsmith-sdk, relation: integration, weight: 0.4 }
+      - { full_name: langchain-ai/langchain-mcp-adapters, relation: integration, weight: 0.4 }
+      - { full_name: langchain-ai/langchain-google, relation: integration, weight: 0.4 }
+      - { full_name: langchain-ai/langchain-aws, relation: integration, weight: 0.4 }
+      - { full_name: langchain-ai/langchain-postgres, relation: integration, weight: 0.4 }
+
+  - slug: llamaindex
+    name: LlamaIndex
+    subdomain: rag
+    aliases: ["llamaindex", "llama index", "gpt-index"]
+    summary: Data framework for indexing and querying private data with LLMs.
+    discovery:
+      topics: [llamaindex, rag, llm]
+      orgs: [run-llama]
+    repositories:
+      - { full_name: run-llama/llama_index, relation: canonical, weight: 1.0 }
+      - { full_name: run-llama/LlamaIndexTS, relation: implementation, weight: 0.6 }
+      # Formerly run-llama/llama_parse.
+      - { full_name: run-llama/llama_cloud_services, relation: integration, weight: 0.4 }
+      - { full_name: run-llama/create-llama, relation: ecosystem, weight: 0.25 }
+
+  - slug: haystack
+    name: Haystack
+    subdomain: rag
+    aliases: ["haystack", "deepset haystack"]
+    summary: Production-oriented framework for composable retrieval and LLM pipelines.
+    discovery:
+      topics: [haystack, rag, semantic-search]
+      orgs: [deepset-ai]
+    repositories:
+      - { full_name: deepset-ai/haystack, relation: canonical, weight: 1.0 }
+      - { full_name: deepset-ai/haystack-core-integrations, relation: integration, weight: 0.4 }
+      - { full_name: deepset-ai/haystack-experimental, relation: ecosystem, weight: 0.25 }
+
+  - slug: chroma
+    name: Chroma
+    subdomain: rag
+    aliases: ["chroma", "chromadb"]
+    summary: Embedded-first open-source vector database.
+    discovery:
+      topics: [vector-database, embeddings, chroma]
+      orgs: [chroma-core]
+    repositories:
+      - { full_name: chroma-core/chroma, relation: canonical, weight: 1.0 }
+
+  - slug: qdrant
+    name: Qdrant
+    subdomain: rag
+    aliases: ["qdrant"]
+    summary: Rust vector search engine with filtering and quantisation.
+    discovery:
+      topics: [vector-database, vector-search, qdrant]
+      orgs: [qdrant]
+    repositories:
+      - { full_name: qdrant/qdrant, relation: canonical, weight: 1.0 }
+      - { full_name: qdrant/qdrant-client, relation: implementation, weight: 0.6 }
+      - { full_name: qdrant/qdrant-js, relation: implementation, weight: 0.6 }
+      - { full_name: qdrant/fastembed, relation: integration, weight: 0.4 }
+
+  - slug: weaviate
+    name: Weaviate
+    subdomain: rag
+    aliases: ["weaviate"]
+    summary: Vector database with built-in vectorisation modules and hybrid search.
+    discovery:
+      topics: [vector-database, weaviate, semantic-search]
+      orgs: [weaviate]
+    repositories:
+      - { full_name: weaviate/weaviate, relation: canonical, weight: 1.0 }
+      - { full_name: weaviate/weaviate-python-client, relation: implementation, weight: 0.6 }
+
+  - slug: milvus
+    name: Milvus
+    subdomain: rag
+    aliases: ["milvus"]
+    summary: Distributed vector database for billion-scale similarity search.
+    discovery:
+      topics: [vector-database, milvus, ann]
+      orgs: [milvus-io]
+    repositories:
+      - { full_name: milvus-io/milvus, relation: canonical, weight: 1.0 }
+      - { full_name: milvus-io/pymilvus, relation: implementation, weight: 0.6 }
+      - { full_name: milvus-io/milvus-sdk-go, relation: implementation, weight: 0.6 }
+
+  - slug: pgvector
+    name: pgvector
+    subdomain: rag
+    aliases: ["pgvector"]
+    summary: PostgreSQL extension adding vector similarity search.
+    discovery:
+      topics: [pgvector, postgresql, vector-search]
+      orgs: [pgvector]
+    repositories:
+      - { full_name: pgvector/pgvector, relation: canonical, weight: 1.0 }
+      - { full_name: pgvector/pgvector-python, relation: implementation, weight: 0.6 }
+
+  - slug: docling
+    name: Docling
+    subdomain: rag
+    aliases: ["docling"]
+    summary: Document parser converting PDFs and office formats into retrieval-ready text.
+    discovery:
+      topics: [docling, pdf, document-parsing, rag]
+      orgs: [docling-project]
+    repositories:
+      - { full_name: docling-project/docling, relation: canonical, weight: 1.0 }
+      - { full_name: docling-project/docling-core, relation: implementation, weight: 0.6 }
+      - { full_name: docling-project/docling-serve, relation: integration, weight: 0.4 }
+
+  - slug: ragas
+    name: Ragas
+    subdomain: rag
+    aliases: ["ragas"]
+    summary: Evaluation framework for retrieval-augmented generation pipelines.
+    discovery:
+      topics: [rag, evaluation, llm-evaluation]
+      orgs: [vibrantlabsai]
+    repositories:
+      # Formerly explodinggradients/ragas.
+      - { full_name: vibrantlabsai/ragas, relation: canonical, weight: 1.0 }
+
+  # ═══════════════ AI Infrastructure & Inference ════════════════
+
+  - slug: vllm
+    name: vLLM
+    subdomain: ai_infra
+    headline: true
+    aliases: ["vllm"]
+    summary: High-throughput LLM serving engine built on paged attention.
+    discovery:
+      topics: [vllm, inference, llm-serving]
+      orgs: [vllm-project]
+    repositories:
+      - { full_name: vllm-project/vllm, relation: canonical, weight: 1.0 }
+      - { full_name: vllm-project/vllm-ascend, relation: implementation, weight: 0.6 }
+      - { full_name: vllm-project/aibrix, relation: integration, weight: 0.4 }
+      - { full_name: vllm-project/llm-compressor, relation: integration, weight: 0.4 }
+      - { full_name: vllm-project/compressed-tensors, relation: integration, weight: 0.4 }
+      - { full_name: vllm-project/guidellm, relation: integration, weight: 0.4 }
+      - { full_name: vllm-project/production-stack, relation: ecosystem, weight: 0.25 }
+      - { full_name: vllm-project/recipes, relation: ecosystem, weight: 0.25 }
+
+  - slug: sglang
+    name: SGLang
+    subdomain: ai_infra
+    headline: true
+    aliases: ["sglang"]
+    summary: Serving runtime with RadixAttention and structured generation.
+    discovery:
+      topics: [sglang, inference, llm-serving]
+      orgs: [sgl-project]
+    repositories:
+      - { full_name: sgl-project/sglang, relation: canonical, weight: 1.0 }
+      - { full_name: sgl-project/SpecForge, relation: integration, weight: 0.4 }
+
+  - slug: llama-cpp
+    name: llama.cpp
+    subdomain: ai_infra
+    aliases: ["llama.cpp", "llamacpp", "ggml", "gguf"]
+    summary: C/C++ inference of LLMs on commodity CPU and GPU hardware.
+    discovery:
+      topics: [llama-cpp, ggml, gguf, inference]
+      orgs: [ggml-org]
+    repositories:
+      - { full_name: ggml-org/llama.cpp, relation: canonical, weight: 1.0 }
+      - { full_name: ggml-org/ggml, relation: implementation, weight: 0.6 }
+      - { full_name: ggml-org/whisper.cpp, relation: integration, weight: 0.4 }
+      - { full_name: ggml-org/llama.vim, relation: ecosystem, weight: 0.25 }
+
+  - slug: ollama
+    name: Ollama
+    subdomain: ai_infra
+    aliases: ["ollama"]
+    summary: Local model runner packaging weights, templates and an HTTP API.
+    discovery:
+      topics: [ollama, llm, local-llm]
+      orgs: [ollama]
+    repositories:
+      - { full_name: ollama/ollama, relation: canonical, weight: 1.0 }
+      - { full_name: ollama/ollama-python, relation: implementation, weight: 0.6 }
+      - { full_name: ollama/ollama-js, relation: implementation, weight: 0.6 }
+
+  - slug: tensorrt-llm
+    name: TensorRT-LLM
+    subdomain: ai_infra
+    aliases: ["tensorrt-llm", "tensorrt llm"]
+    summary: NVIDIA's compiler and runtime for optimised LLM inference.
+    discovery:
+      topics: [tensorrt, inference, nvidia]
+      orgs: [NVIDIA]
+    repositories:
+      - { full_name: NVIDIA/TensorRT-LLM, relation: canonical, weight: 1.0 }
+      - { full_name: NVIDIA/TensorRT, relation: implementation, weight: 0.6 }
+
+  - slug: tgi
+    name: Text Generation Inference
+    subdomain: ai_infra
+    aliases: ["tgi", "text-generation-inference"]
+    summary: Hugging Face's Rust/Python LLM serving stack.
+    discovery:
+      topics: [text-generation-inference, inference]
+      orgs: [huggingface]
+    repositories:
+      - { full_name: huggingface/text-generation-inference, relation: canonical, weight: 1.0 }
+
+  - slug: ray
+    name: Ray
+    subdomain: ai_infra
+    aliases: ["ray", "ray serve", "anyscale ray"]
+    summary: Distributed compute framework widely used for training and serving.
+    discovery:
+      topics: [ray, distributed, serving]
+      orgs: [ray-project]
+    repositories:
+      - { full_name: ray-project/ray, relation: canonical, weight: 1.0 }
+      - { full_name: ray-project/kuberay, relation: integration, weight: 0.4 }
+
+  - slug: litellm
+    name: LiteLLM
+    subdomain: ai_infra
+    aliases: ["litellm"]
+    summary: Provider-agnostic gateway exposing many LLM APIs behind one interface.
+    discovery:
+      topics: [litellm, llm-gateway, proxy]
+      orgs: [BerriAI]
+    repositories:
+      - { full_name: BerriAI/litellm, relation: canonical, weight: 1.0 }
+
+  # ═══════════════════════════ Multimodal ════════════════════════════
+
+  - slug: whisper
+    name: Whisper
+    subdomain: multimodal
+    aliases: ["whisper", "faster-whisper"]
+    summary: Speech recognition model family and its optimised reimplementations.
+    discovery:
+      topics: [whisper, speech-recognition, asr]
+    repositories:
+      - { full_name: openai/whisper, relation: canonical, weight: 1.0 }
+      - { full_name: SYSTRAN/faster-whisper, relation: implementation, weight: 0.6 }
+      - { full_name: m-bain/whisperX, relation: implementation, weight: 0.6 }
+
+  - slug: diffusers
+    name: Diffusers
+    subdomain: multimodal
+    aliases: ["diffusers"]
+    summary: Library of diffusion pipelines for image, audio and video generation.
+    discovery:
+      topics: [diffusers, diffusion, image-generation]
+      orgs: [huggingface]
+    repositories:
+      - { full_name: huggingface/diffusers, relation: canonical, weight: 1.0 }
+
+  - slug: comfyui
+    name: ComfyUI
+    subdomain: multimodal
+    aliases: ["comfyui", "comfy"]
+    summary: Node-graph interface for composing diffusion and generative pipelines.
+    discovery:
+      topics: [comfyui, stable-diffusion, image-generation]
+      orgs: [Comfy-Org]
+    repositories:
+      # Transferred from comfyanonymous/ComfyUI to the Comfy-Org organisation.
+      - { full_name: Comfy-Org/ComfyUI, relation: canonical, weight: 1.0 }
+      - { full_name: Comfy-Org/desktop, relation: implementation, weight: 0.6 }
+      - { full_name: Comfy-Org/ComfyUI-Manager, relation: ecosystem, weight: 0.25 }
+      - { full_name: Comfy-Org/comfy-cli, relation: ecosystem, weight: 0.25 }
+
+  # ═══════════════════ MLOps & Observability ════════════════════
+
+  - slug: mlflow
+    name: MLflow
+    subdomain: mlops
+    aliases: ["mlflow"]
+    summary: Experiment tracking, model registry and deployment lifecycle platform.
+    discovery:
+      topics: [mlflow, mlops, experiment-tracking]
+      orgs: [mlflow]
+    repositories:
+      - { full_name: mlflow/mlflow, relation: canonical, weight: 1.0 }
+
+  - slug: langfuse
+    name: Langfuse
+    subdomain: mlops
+    headline: true
+    aliases: ["langfuse"]
+    summary: Open-source LLM observability, tracing and evaluation platform.
+    discovery:
+      topics: [langfuse, llm-observability, llmops]
+      orgs: [langfuse]
+    repositories:
+      - { full_name: langfuse/langfuse, relation: canonical, weight: 1.0 }
+      - { full_name: langfuse/langfuse-python, relation: implementation, weight: 0.6 }
+      - { full_name: langfuse/langfuse-js, relation: implementation, weight: 0.6 }
+
+  - slug: phoenix
+    name: Arize Phoenix
+    subdomain: mlops
+    aliases: ["phoenix", "arize phoenix", "openinference"]
+    summary: LLM tracing and evaluation built on OpenTelemetry conventions.
+    discovery:
+      topics: [phoenix, llm-observability, opentelemetry]
+      orgs: [Arize-ai]
+    repositories:
+      - { full_name: Arize-ai/phoenix, relation: canonical, weight: 1.0 }
+      - { full_name: Arize-ai/openinference, relation: integration, weight: 0.4 }
+
+  # ══════════════════════════ AI Security ═══════════════════════════
+
+  - slug: garak
+    name: garak
+    subdomain: ai_security
+    aliases: ["garak"]
+    summary: LLM vulnerability scanner and red-teaming probe suite.
+    discovery:
+      topics: [garak, llm-security, red-teaming]
+      orgs: [NVIDIA]
+    repositories:
+      - { full_name: NVIDIA/garak, relation: canonical, weight: 1.0 }
+
+  - slug: nemo-guardrails
+    name: NeMo Guardrails
+    subdomain: ai_security
+    aliases: ["nemo guardrails", "nemoguardrails"]
+    summary: Programmable dialogue rails constraining LLM behaviour.
+    discovery:
+      topics: [guardrails, llm-safety]
+      orgs: [NVIDIA-NeMo]
+    repositories:
+      # Formerly NVIDIA/NeMo-Guardrails.
+      - { full_name: NVIDIA-NeMo/Guardrails, relation: canonical, weight: 1.0 }
+
+  - slug: promptfoo
+    name: promptfoo
+    subdomain: ai_security
+    headline: true
+    aliases: ["promptfoo"]
+    summary: Prompt evaluation and LLM red-teaming test harness.
+    discovery:
+      topics: [promptfoo, llm-evaluation, red-teaming]
+      orgs: [promptfoo]
+    repositories:
+      - { full_name: promptfoo/promptfoo, relation: canonical, weight: 1.0 }
+
+  - slug: llm-guard
+    name: LLM Guard
+    subdomain: ai_security
+    aliases: ["llm-guard", "modelscan"]
+    summary: Input/output scanning and model supply-chain checks for LLM apps.
+    discovery:
+      topics: [llm-security, prompt-injection, model-scanning]
+      orgs: [protectai]
+    repositories:
+      - { full_name: protectai/llm-guard, relation: canonical, weight: 1.0 }
+      - { full_name: protectai/modelscan, relation: implementation, weight: 0.6 }

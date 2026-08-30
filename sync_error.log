@@ -1,0 +1,284 @@
+2026-08-29 16:08:44,550 INFO  httpx | HTTP Request: GET https://api.github.com/repos/modelcontextprotocol/modelcontextprotocol "HTTP/1.1 304 Not Modified"
+2026-08-29 16:08:45,529 INFO  httpx | HTTP Request: GET https://api.github.com/repos/modelcontextprotocol/modelcontextprotocol/stats/commit_activity "HTTP/1.1 200 OK"
+2026-08-29 16:08:47,046 INFO  httpx | HTTP Request: GET https://api.github.com/repos/modelcontextprotocol/modelcontextprotocol/releases?per_page=30 "HTTP/1.1 200 OK"
+2026-08-29 16:08:48,824 INFO  httpx | HTTP Request: GET https://api.github.com/repos/modelcontextprotocol/modelcontextprotocol/stats/contributors "HTTP/1.1 200 OK"
+2026-08-29 16:09:47,294 INFO  httpx | HTTP Request: GET https://api.github.com/repos/modelcontextprotocol/servers "HTTP/1.1 200 OK"
+2026-08-29 16:09:47,806 INFO  httpx | HTTP Request: GET https://api.github.com/repos/modelcontextprotocol/servers/stats/commit_activity "HTTP/1.1 200 OK"
+2026-08-29 16:09:48,358 INFO  httpx | HTTP Request: GET https://api.github.com/repos/modelcontextprotocol/servers/releases?per_page=30 "HTTP/1.1 200 OK"
+2026-08-29 16:09:49,025 INFO  httpx | HTTP Request: GET https://api.github.com/repos/modelcontextprotocol/servers/stats/contributors "HTTP/1.1 200 OK"
+2026-08-29 16:10:02,683 INFO  httpx | HTTP Request: GET https://api.github.com/repos/modelcontextprotocol/python-sdk "HTTP/1.1 200 OK"
+2026-08-29 16:10:03,265 INFO  httpx | HTTP Request: GET https://api.github.com/repos/modelcontextprotocol/python-sdk/stats/commit_activity "HTTP/1.1 200 OK"
+2026-08-29 16:10:03,826 INFO  httpx | HTTP Request: GET https://api.github.com/repos/modelcontextprotocol/python-sdk/releases?per_page=30 "HTTP/1.1 200 OK"
+2026-08-29 16:10:04,805 INFO  httpx | HTTP Request: GET https://api.github.com/repos/modelcontextprotocol/python-sdk/stats/contributors "HTTP/1.1 200 OK"
+2026-08-29 16:10:26,283 INFO  httpx | HTTP Request: GET https://api.github.com/repos/modelcontextprotocol/typescript-sdk "HTTP/1.1 304 Not Modified"
+2026-08-29 16:10:26,763 INFO  httpx | HTTP Request: GET https://api.github.com/repos/modelcontextprotocol/typescript-sdk/stats/commit_activity "HTTP/1.1 200 OK"
+2026-08-29 16:10:27,813 INFO  httpx | HTTP Request: GET https://api.github.com/repos/modelcontextprotocol/typescript-sdk/releases?per_page=30 "HTTP/1.1 200 OK"
+2026-08-29 16:10:29,098 INFO  httpx | HTTP Request: GET https://api.github.com/repos/modelcontextprotocol/typescript-sdk/stats/contributors "HTTP/1.1 200 OK"
+2026-08-29 16:10:42,189 INFO  httpx | HTTP Request: GET https://api.github.com/repos/modelcontextprotocol/go-sdk "HTTP/1.1 304 Not Modified"
+2026-08-29 16:10:42,780 INFO  httpx | HTTP Request: GET https://api.github.com/repos/modelcontextprotocol/go-sdk/stats/commit_activity "HTTP/1.1 200 OK"
+2026-08-29 16:10:43,370 INFO  httpx | HTTP Request: GET https://api.github.com/repos/modelcontextprotocol/go-sdk/releases?per_page=30 "HTTP/1.1 200 OK"
+2026-08-29 16:10:45,246 INFO  httpx | HTTP Request: GET https://api.github.com/repos/modelcontextprotocol/go-sdk/stats/contributors "HTTP/1.1 200 OK"
+2026-08-29 16:10:56,827 INFO  httpx | HTTP Request: GET https://api.github.com/repos/modelcontextprotocol/rust-sdk "HTTP/1.1 304 Not Modified"
+2026-08-29 16:10:57,593 INFO  httpx | HTTP Request: GET https://api.github.com/repos/modelcontextprotocol/rust-sdk/stats/commit_activity "HTTP/1.1 200 OK"
+2026-08-29 16:10:58,388 INFO  httpx | HTTP Request: GET https://api.github.com/repos/modelcontextprotocol/rust-sdk/releases?per_page=30 "HTTP/1.1 200 OK"
+2026-08-29 16:10:59,486 INFO  httpx | HTTP Request: GET https://api.github.com/repos/modelcontextprotocol/rust-sdk/stats/contributors "HTTP/1.1 200 OK"
+2026-08-29 16:11:35,154 INFO  httpx | HTTP Request: GET https://api.github.com/repos/modelcontextprotocol/java-sdk "HTTP/1.1 304 Not Modified"
+2026-08-29 16:11:35,613 INFO  httpx | HTTP Request: GET https://api.github.com/repos/modelcontextprotocol/java-sdk/stats/commit_activity "HTTP/1.1 200 OK"
+2026-08-29 16:11:36,106 INFO  httpx | HTTP Request: GET https://api.github.com/repos/modelcontextprotocol/java-sdk/releases?per_page=30 "HTTP/1.1 200 OK"
+2026-08-29 16:11:36,731 INFO  httpx | HTTP Request: GET https://api.github.com/repos/modelcontextprotocol/java-sdk/stats/contributors "HTTP/1.1 200 OK"
+2026-08-29 16:11:41,457 INFO  httpx | HTTP Request: GET https://api.github.com/repos/modelcontextprotocol/kotlin-sdk "HTTP/1.1 304 Not Modified"
+2026-08-29 16:11:41,871 INFO  httpx | HTTP Request: GET https://api.github.com/repos/modelcontextprotocol/kotlin-sdk/stats/commit_activity "HTTP/1.1 200 OK"
+2026-08-29 16:11:42,368 INFO  httpx | HTTP Request: GET https://api.github.com/repos/modelcontextprotocol/kotlin-sdk/releases?per_page=30 "HTTP/1.1 200 OK"
+2026-08-29 16:11:43,096 INFO  httpx | HTTP Request: GET https://api.github.com/repos/modelcontextprotocol/kotlin-sdk/stats/contributors "HTTP/1.1 200 OK"
+2026-08-29 16:11:47,102 INFO  httpx | HTTP Request: GET https://api.github.com/repos/modelcontextprotocol/csharp-sdk "HTTP/1.1 304 Not Modified"
+2026-08-29 16:11:47,523 INFO  httpx | HTTP Request: GET https://api.github.com/repos/modelcontextprotocol/csharp-sdk/stats/commit_activity "HTTP/1.1 200 OK"
+2026-08-29 16:11:48,139 INFO  httpx | HTTP Request: GET https://api.github.com/repos/modelcontextprotocol/csharp-sdk/releases?per_page=30 "HTTP/1.1 200 OK"
+2026-08-29 16:11:48,833 INFO  httpx | HTTP Request: GET https://api.github.com/repos/modelcontextprotocol/csharp-sdk/stats/contributors "HTTP/1.1 200 OK"
+2026-08-29 16:11:54,056 INFO  httpx | HTTP Request: GET https://api.github.com/repos/modelcontextprotocol/swift-sdk "HTTP/1.1 304 Not Modified"
+2026-08-29 16:11:54,630 INFO  httpx | HTTP Request: GET https://api.github.com/repos/modelcontextprotocol/swift-sdk/stats/commit_activity "HTTP/1.1 200 OK"
+2026-08-29 16:11:55,103 INFO  httpx | HTTP Request: GET https://api.github.com/repos/modelcontextprotocol/swift-sdk/releases?per_page=30 "HTTP/1.1 200 OK"
+2026-08-29 16:11:55,641 INFO  httpx | HTTP Request: GET https://api.github.com/repos/modelcontextprotocol/swift-sdk/stats/contributors "HTTP/1.1 200 OK"
+2026-08-29 16:12:00,012 INFO  httpx | HTTP Request: GET https://api.github.com/repos/modelcontextprotocol/ruby-sdk "HTTP/1.1 200 OK"
+2026-08-29 16:12:00,525 INFO  httpx | HTTP Request: GET https://api.github.com/repos/modelcontextprotocol/ruby-sdk/stats/commit_activity "HTTP/1.1 200 OK"
+2026-08-29 16:12:01,007 INFO  httpx | HTTP Request: GET https://api.github.com/repos/modelcontextprotocol/ruby-sdk/releases?per_page=30 "HTTP/1.1 200 OK"
+2026-08-29 16:12:01,471 INFO  httpx | HTTP Request: GET https://api.github.com/repos/modelcontextprotocol/ruby-sdk/stats/contributors "HTTP/1.1 202 Accepted"
+2026-08-29 16:12:05,466 INFO  httpx | HTTP Request: GET https://api.github.com/repos/modelcontextprotocol/inspector "HTTP/1.1 200 OK"
+2026-08-29 16:12:05,911 INFO  httpx | HTTP Request: GET https://api.github.com/repos/modelcontextprotocol/inspector/stats/commit_activity "HTTP/1.1 200 OK"
+2026-08-29 16:12:06,401 INFO  httpx | HTTP Request: GET https://api.github.com/repos/modelcontextprotocol/inspector/releases?per_page=30 "HTTP/1.1 200 OK"
+2026-08-29 16:12:07,036 INFO  httpx | HTTP Request: GET https://api.github.com/repos/modelcontextprotocol/inspector/stats/contributors "HTTP/1.1 200 OK"
+2026-08-29 16:12:11,682 INFO  httpx | HTTP Request: GET https://api.github.com/repos/modelcontextprotocol/registry "HTTP/1.1 304 Not Modified"
+2026-08-29 16:12:12,105 INFO  httpx | HTTP Request: GET https://api.github.com/repos/modelcontextprotocol/registry/stats/commit_activity "HTTP/1.1 200 OK"
+2026-08-29 16:12:13,266 INFO  httpx | HTTP Request: GET https://api.github.com/repos/modelcontextprotocol/registry/releases?per_page=30 "HTTP/1.1 200 OK"
+2026-08-29 16:12:13,965 INFO  httpx | HTTP Request: GET https://api.github.com/repos/modelcontextprotocol/registry/stats/contributors "HTTP/1.1 200 OK"
+2026-08-29 16:12:18,200 INFO  httpx | HTTP Request: GET https://api.github.com/repos/modelcontextprotocol/docs "HTTP/1.1 304 Not Modified"
+2026-08-29 16:12:18,720 INFO  httpx | HTTP Request: GET https://api.github.com/repos/modelcontextprotocol/docs/stats/commit_activity "HTTP/1.1 200 OK"
+2026-08-29 16:12:19,115 INFO  httpx | HTTP Request: GET https://api.github.com/repos/modelcontextprotocol/docs/releases?per_page=30 "HTTP/1.1 200 OK"
+2026-08-29 16:12:19,709 INFO  httpx | HTTP Request: GET https://api.github.com/repos/modelcontextprotocol/docs/stats/contributors "HTTP/1.1 200 OK"
+2026-08-29 16:12:24,667 INFO  httpx | HTTP Request: GET https://api.github.com/repos/punkpeye/awesome-mcp-servers "HTTP/1.1 200 OK"
+2026-08-29 16:12:25,341 INFO  httpx | HTTP Request: GET https://api.github.com/repos/punkpeye/awesome-mcp-servers/stats/commit_activity "HTTP/1.1 200 OK"
+2026-08-29 16:12:25,728 INFO  httpx | HTTP Request: GET https://api.github.com/repos/punkpeye/awesome-mcp-servers/releases?per_page=30 "HTTP/1.1 200 OK"
+2026-08-29 16:12:27,863 INFO  httpx | HTTP Request: GET https://api.github.com/repos/punkpeye/awesome-mcp-servers/stats/contributors "HTTP/1.1 200 OK"
+2026-08-29 16:12:33,123 INFO  httpx | HTTP Request: GET https://api.github.com/repos/langchain-ai/langgraph "HTTP/1.1 200 OK"
+2026-08-29 16:12:33,594 INFO  httpx | HTTP Request: GET https://api.github.com/repos/langchain-ai/langgraph/stats/commit_activity "HTTP/1.1 200 OK"
+2026-08-29 16:12:34,090 INFO  httpx | HTTP Request: GET https://api.github.com/repos/langchain-ai/langgraph/releases?per_page=30 "HTTP/1.1 200 OK"
+2026-08-29 16:12:34,800 INFO  httpx | HTTP Request: GET https://api.github.com/repos/langchain-ai/langgraph/stats/contributors "HTTP/1.1 200 OK"
+2026-08-29 16:12:39,310 INFO  httpx | HTTP Request: GET https://api.github.com/repos/langchain-ai/langgraphjs "HTTP/1.1 304 Not Modified"
+2026-08-29 16:12:39,798 INFO  httpx | HTTP Request: GET https://api.github.com/repos/langchain-ai/langgraphjs/stats/commit_activity "HTTP/1.1 200 OK"
+2026-08-29 16:12:40,426 INFO  httpx | HTTP Request: GET https://api.github.com/repos/langchain-ai/langgraphjs/releases?per_page=30 "HTTP/1.1 200 OK"
+2026-08-29 16:12:41,156 INFO  httpx | HTTP Request: GET https://api.github.com/repos/langchain-ai/langgraphjs/stats/contributors "HTTP/1.1 200 OK"
+2026-08-29 16:12:45,983 INFO  httpx | HTTP Request: GET https://api.github.com/repos/langchain-ai/open_deep_research "HTTP/1.1 304 Not Modified"
+2026-08-29 16:12:46,427 INFO  httpx | HTTP Request: GET https://api.github.com/repos/langchain-ai/open_deep_research/stats/commit_activity "HTTP/1.1 200 OK"
+2026-08-29 16:12:46,807 INFO  httpx | HTTP Request: GET https://api.github.com/repos/langchain-ai/open_deep_research/releases?per_page=30 "HTTP/1.1 200 OK"
+2026-08-29 16:12:47,300 INFO  httpx | HTTP Request: GET https://api.github.com/repos/langchain-ai/open_deep_research/stats/contributors "HTTP/1.1 200 OK"
+2026-08-29 16:12:51,988 INFO  httpx | HTTP Request: GET https://api.github.com/repos/langchain-ai/deepagents "HTTP/1.1 200 OK"
+2026-08-29 16:12:52,421 INFO  httpx | HTTP Request: GET https://api.github.com/repos/langchain-ai/deepagents/stats/commit_activity "HTTP/1.1 200 OK"
+2026-08-29 16:12:52,949 INFO  httpx | HTTP Request: GET https://api.github.com/repos/langchain-ai/deepagents/releases?per_page=30 "HTTP/1.1 200 OK"
+2026-08-29 16:12:53,728 INFO  httpx | HTTP Request: GET https://api.github.com/repos/langchain-ai/deepagents/stats/contributors "HTTP/1.1 200 OK"
+2026-08-29 16:12:58,169 INFO  httpx | HTTP Request: GET https://api.github.com/repos/microsoft/autogen "HTTP/1.1 200 OK"
+2026-08-29 16:12:58,622 INFO  httpx | HTTP Request: GET https://api.github.com/repos/microsoft/autogen/stats/commit_activity "HTTP/1.1 200 OK"
+2026-08-29 16:12:59,132 INFO  httpx | HTTP Request: GET https://api.github.com/repos/microsoft/autogen/releases?per_page=30 "HTTP/1.1 200 OK"
+2026-08-29 16:12:59,823 INFO  httpx | HTTP Request: GET https://api.github.com/repos/microsoft/autogen/stats/contributors "HTTP/1.1 200 OK"
+2026-08-29 16:13:05,178 INFO  httpx | HTTP Request: GET https://api.github.com/repos/crewAIInc/crewAI "HTTP/1.1 200 OK"
+2026-08-29 16:13:05,632 INFO  httpx | HTTP Request: GET https://api.github.com/repos/crewAIInc/crewAI/stats/commit_activity "HTTP/1.1 200 OK"
+2026-08-29 16:13:06,127 INFO  httpx | HTTP Request: GET https://api.github.com/repos/crewAIInc/crewAI/releases?per_page=30 "HTTP/1.1 200 OK"
+2026-08-29 16:13:06,839 INFO  httpx | HTTP Request: GET https://api.github.com/repos/crewAIInc/crewAI/stats/contributors "HTTP/1.1 200 OK"
+2026-08-29 16:13:11,751 INFO  httpx | HTTP Request: GET https://api.github.com/repos/crewAIInc/crewAI-tools "HTTP/1.1 304 Not Modified"
+2026-08-29 16:13:12,213 INFO  httpx | HTTP Request: GET https://api.github.com/repos/crewAIInc/crewAI-tools/stats/commit_activity "HTTP/1.1 200 OK"
+2026-08-29 16:13:12,621 INFO  httpx | HTTP Request: GET https://api.github.com/repos/crewAIInc/crewAI-tools/releases?per_page=30 "HTTP/1.1 200 OK"
+2026-08-29 16:13:13,267 INFO  httpx | HTTP Request: GET https://api.github.com/repos/crewAIInc/crewAI-tools/stats/contributors "HTTP/1.1 200 OK"
+2026-08-29 16:13:17,544 INFO  httpx | HTTP Request: GET https://api.github.com/repos/crewAIInc/crewAI-examples "HTTP/1.1 304 Not Modified"
+2026-08-29 16:13:17,971 INFO  httpx | HTTP Request: GET https://api.github.com/repos/crewAIInc/crewAI-examples/stats/commit_activity "HTTP/1.1 200 OK"
+2026-08-29 16:13:18,345 INFO  httpx | HTTP Request: GET https://api.github.com/repos/crewAIInc/crewAI-examples/releases?per_page=30 "HTTP/1.1 200 OK"
+2026-08-29 16:13:18,922 INFO  httpx | HTTP Request: GET https://api.github.com/repos/crewAIInc/crewAI-examples/stats/contributors "HTTP/1.1 200 OK"
+2026-08-29 16:13:24,411 INFO  httpx | HTTP Request: GET https://api.github.com/repos/openai/openai-agents-python "HTTP/1.1 200 OK"
+2026-08-29 16:13:24,933 INFO  httpx | HTTP Request: GET https://api.github.com/repos/openai/openai-agents-python/stats/commit_activity "HTTP/1.1 200 OK"
+2026-08-29 16:13:25,516 INFO  httpx | HTTP Request: GET https://api.github.com/repos/openai/openai-agents-python/releases?per_page=30 "HTTP/1.1 200 OK"
+2026-08-29 16:13:26,177 INFO  httpx | HTTP Request: GET https://api.github.com/repos/openai/openai-agents-python/stats/contributors "HTTP/1.1 200 OK"
+2026-08-29 16:13:30,583 INFO  httpx | HTTP Request: GET https://api.github.com/repos/openai/openai-agents-js "HTTP/1.1 200 OK"
+2026-08-29 16:13:31,036 INFO  httpx | HTTP Request: GET https://api.github.com/repos/openai/openai-agents-js/stats/commit_activity "HTTP/1.1 200 OK"
+2026-08-29 16:13:31,506 INFO  httpx | HTTP Request: GET https://api.github.com/repos/openai/openai-agents-js/releases?per_page=30 "HTTP/1.1 200 OK"
+2026-08-29 16:13:32,131 INFO  httpx | HTTP Request: GET https://api.github.com/repos/openai/openai-agents-js/stats/contributors "HTTP/1.1 200 OK"
+2026-08-29 16:13:36,586 INFO  httpx | HTTP Request: GET https://api.github.com/repos/openai/swarm "HTTP/1.1 304 Not Modified"
+2026-08-29 16:13:37,015 INFO  httpx | HTTP Request: GET https://api.github.com/repos/openai/swarm/stats/commit_activity "HTTP/1.1 200 OK"
+2026-08-29 16:13:37,403 INFO  httpx | HTTP Request: GET https://api.github.com/repos/openai/swarm/releases?per_page=30 "HTTP/1.1 200 OK"
+2026-08-29 16:13:37,852 INFO  httpx | HTTP Request: GET https://api.github.com/repos/openai/swarm/stats/contributors "HTTP/1.1 200 OK"
+2026-08-29 16:13:42,479 INFO  httpx | HTTP Request: GET https://api.github.com/repos/browser-use/browser-use "HTTP/1.1 200 OK"
+2026-08-29 16:13:43,114 INFO  httpx | HTTP Request: GET https://api.github.com/repos/browser-use/browser-use/stats/commit_activity "HTTP/1.1 200 OK"
+2026-08-29 16:13:43,565 INFO  httpx | HTTP Request: GET https://api.github.com/repos/browser-use/browser-use/releases?per_page=30 "HTTP/1.1 200 OK"
+2026-08-29 16:13:45,532 INFO  httpx | HTTP Request: GET https://api.github.com/repos/browser-use/browser-use/stats/contributors "HTTP/1.1 200 OK"
+2026-08-29 16:13:49,707 INFO  httpx | HTTP Request: GET https://api.github.com/repos/browser-use/web-ui "HTTP/1.1 304 Not Modified"
+2026-08-29 16:13:50,193 INFO  httpx | HTTP Request: GET https://api.github.com/repos/browser-use/web-ui/stats/commit_activity "HTTP/1.1 200 OK"
+2026-08-29 16:13:50,664 INFO  httpx | HTTP Request: GET https://api.github.com/repos/browser-use/web-ui/releases?per_page=30 "HTTP/1.1 200 OK"
+2026-08-29 16:13:51,296 INFO  httpx | HTTP Request: GET https://api.github.com/repos/browser-use/web-ui/stats/contributors "HTTP/1.1 200 OK"
+2026-08-29 16:13:55,320 INFO  httpx | HTTP Request: GET https://api.github.com/repos/huggingface/smolagents "HTTP/1.1 200 OK"
+2026-08-29 16:13:55,734 INFO  httpx | HTTP Request: GET https://api.github.com/repos/huggingface/smolagents/stats/commit_activity "HTTP/1.1 200 OK"
+2026-08-29 16:13:56,224 INFO  httpx | HTTP Request: GET https://api.github.com/repos/huggingface/smolagents/releases?per_page=30 "HTTP/1.1 200 OK"
+2026-08-29 16:13:56,886 INFO  httpx | HTTP Request: GET https://api.github.com/repos/huggingface/smolagents/stats/contributors "HTTP/1.1 200 OK"
+2026-08-29 16:14:01,678 INFO  httpx | HTTP Request: GET https://api.github.com/repos/pydantic/pydantic-ai "HTTP/1.1 200 OK"
+2026-08-29 16:14:02,132 INFO  httpx | HTTP Request: GET https://api.github.com/repos/pydantic/pydantic-ai/stats/commit_activity "HTTP/1.1 200 OK"
+2026-08-29 16:14:02,635 INFO  httpx | HTTP Request: GET https://api.github.com/repos/pydantic/pydantic-ai/releases?per_page=30 "HTTP/1.1 200 OK"
+2026-08-29 16:14:03,316 INFO  httpx | HTTP Request: GET https://api.github.com/repos/pydantic/pydantic-ai/stats/contributors "HTTP/1.1 200 OK"
+2026-08-29 16:14:07,802 INFO  httpx | HTTP Request: GET https://api.github.com/repos/pydantic/logfire "HTTP/1.1 304 Not Modified"
+2026-08-29 16:14:08,221 INFO  httpx | HTTP Request: GET https://api.github.com/repos/pydantic/logfire/stats/commit_activity "HTTP/1.1 200 OK"
+2026-08-29 16:14:08,680 INFO  httpx | HTTP Request: GET https://api.github.com/repos/pydantic/logfire/releases?per_page=30 "HTTP/1.1 200 OK"
+2026-08-29 16:14:09,398 INFO  httpx | HTTP Request: GET https://api.github.com/repos/pydantic/logfire/stats/contributors "HTTP/1.1 200 OK"
+2026-08-29 16:14:14,288 INFO  httpx | HTTP Request: GET https://api.github.com/repos/langgenius/dify "HTTP/1.1 200 OK"
+2026-08-29 16:14:14,902 INFO  httpx | HTTP Request: GET https://api.github.com/repos/langgenius/dify/stats/commit_activity "HTTP/1.1 200 OK"
+2026-08-29 16:14:15,708 INFO  httpx | HTTP Request: GET https://api.github.com/repos/langgenius/dify/releases?per_page=30 "HTTP/1.1 200 OK"
+2026-08-29 16:14:18,440 INFO  httpx | HTTP Request: GET https://api.github.com/repos/langgenius/dify/stats/contributors "HTTP/1.1 200 OK"
+2026-08-29 16:14:23,213 INFO  httpx | HTTP Request: GET https://api.github.com/repos/langgenius/dify-sandbox "HTTP/1.1 304 Not Modified"
+2026-08-29 16:14:23,718 INFO  httpx | HTTP Request: GET https://api.github.com/repos/langgenius/dify-sandbox/stats/commit_activity "HTTP/1.1 200 OK"
+2026-08-29 16:14:24,221 INFO  httpx | HTTP Request: GET https://api.github.com/repos/langgenius/dify-sandbox/releases?per_page=30 "HTTP/1.1 200 OK"
+2026-08-29 16:14:24,734 INFO  httpx | HTTP Request: GET https://api.github.com/repos/langgenius/dify-sandbox/stats/contributors "HTTP/1.1 200 OK"
+2026-08-29 16:14:29,166 INFO  httpx | HTTP Request: GET https://api.github.com/repos/langgenius/dify-docs "HTTP/1.1 304 Not Modified"
+2026-08-29 16:14:29,597 INFO  httpx | HTTP Request: GET https://api.github.com/repos/langgenius/dify-docs/stats/commit_activity "HTTP/1.1 200 OK"
+2026-08-29 16:14:29,988 INFO  httpx | HTTP Request: GET https://api.github.com/repos/langgenius/dify-docs/releases?per_page=30 "HTTP/1.1 200 OK"
+2026-08-29 16:14:30,573 INFO  httpx | HTTP Request: GET https://api.github.com/repos/langgenius/dify-docs/stats/contributors "HTTP/1.1 200 OK"
+2026-08-29 16:14:35,133 INFO  httpx | HTTP Request: GET https://api.github.com/repos/huggingface/transformers "HTTP/1.1 200 OK"
+2026-08-29 16:14:35,772 INFO  httpx | HTTP Request: GET https://api.github.com/repos/huggingface/transformers/stats/commit_activity "HTTP/1.1 200 OK"
+2026-08-29 16:14:36,295 INFO  httpx | HTTP Request: GET https://api.github.com/repos/huggingface/transformers/releases?per_page=30 "HTTP/1.1 200 OK"
+2026-08-29 16:14:39,520 INFO  httpx | HTTP Request: GET https://api.github.com/repos/huggingface/transformers/stats/contributors "HTTP/1.1 200 OK"
+2026-08-29 16:14:44,785 INFO  httpx | HTTP Request: GET https://api.github.com/repos/huggingface/tokenizers "HTTP/1.1 304 Not Modified"
+2026-08-29 16:14:45,294 INFO  httpx | HTTP Request: GET https://api.github.com/repos/huggingface/tokenizers/stats/commit_activity "HTTP/1.1 200 OK"
+2026-08-29 16:14:45,776 INFO  httpx | HTTP Request: GET https://api.github.com/repos/huggingface/tokenizers/releases?per_page=30 "HTTP/1.1 200 OK"
+2026-08-29 16:14:46,735 INFO  httpx | HTTP Request: GET https://api.github.com/repos/huggingface/tokenizers/stats/contributors "HTTP/1.1 200 OK"
+2026-08-29 16:14:51,210 INFO  httpx | HTTP Request: GET https://api.github.com/repos/huggingface/accelerate "HTTP/1.1 304 Not Modified"
+2026-08-29 16:14:51,603 INFO  httpx | HTTP Request: GET https://api.github.com/repos/huggingface/accelerate/stats/commit_activity "HTTP/1.1 200 OK"
+2026-08-29 16:14:52,102 INFO  httpx | HTTP Request: GET https://api.github.com/repos/huggingface/accelerate/releases?per_page=30 "HTTP/1.1 200 OK"
+2026-08-29 16:14:52,820 INFO  httpx | HTTP Request: GET https://api.github.com/repos/huggingface/accelerate/stats/contributors "HTTP/1.1 200 OK"
+2026-08-29 16:14:56,786 INFO  httpx | HTTP Request: GET https://api.github.com/repos/huggingface/huggingface_hub "HTTP/1.1 200 OK"
+2026-08-29 16:14:57,239 INFO  httpx | HTTP Request: GET https://api.github.com/repos/huggingface/huggingface_hub/stats/commit_activity "HTTP/1.1 200 OK"
+2026-08-29 16:14:57,705 INFO  httpx | HTTP Request: GET https://api.github.com/repos/huggingface/huggingface_hub/releases?per_page=30 "HTTP/1.1 200 OK"
+2026-08-29 16:14:58,399 INFO  httpx | HTTP Request: GET https://api.github.com/repos/huggingface/huggingface_hub/stats/contributors "HTTP/1.1 200 OK"
+2026-08-29 16:15:03,034 INFO  httpx | HTTP Request: GET https://api.github.com/repos/huggingface/candle "HTTP/1.1 200 OK"
+2026-08-29 16:15:03,453 INFO  httpx | HTTP Request: GET https://api.github.com/repos/huggingface/candle/stats/commit_activity "HTTP/1.1 200 OK"
+2026-08-29 16:15:03,853 INFO  httpx | HTTP Request: GET https://api.github.com/repos/huggingface/candle/releases?per_page=30 "HTTP/1.1 200 OK"
+2026-08-29 16:15:04,489 INFO  httpx | HTTP Request: GET https://api.github.com/repos/huggingface/candle/stats/contributors "HTTP/1.1 200 OK"
+2026-08-29 16:15:08,624 INFO  httpx | HTTP Request: GET https://api.github.com/repos/safetensors/safetensors "HTTP/1.1 200 OK"
+2026-08-29 16:15:09,057 INFO  httpx | HTTP Request: GET https://api.github.com/repos/safetensors/safetensors/stats/commit_activity "HTTP/1.1 200 OK"
+2026-08-29 16:15:09,569 INFO  httpx | HTTP Request: GET https://api.github.com/repos/safetensors/safetensors/releases?per_page=30 "HTTP/1.1 200 OK"
+2026-08-29 16:15:10,890 INFO  httpx | HTTP Request: GET https://api.github.com/repos/safetensors/safetensors/stats/contributors "HTTP/1.1 200 OK"
+2026-08-29 16:15:14,926 INFO  httpx | HTTP Request: GET https://api.github.com/repos/huggingface/peft "HTTP/1.1 200 OK"
+2026-08-29 16:15:15,338 INFO  httpx | HTTP Request: GET https://api.github.com/repos/huggingface/peft/stats/commit_activity "HTTP/1.1 200 OK"
+2026-08-29 16:15:15,805 INFO  httpx | HTTP Request: GET https://api.github.com/repos/huggingface/peft/releases?per_page=30 "HTTP/1.1 200 OK"
+2026-08-29 16:15:16,534 INFO  httpx | HTTP Request: GET https://api.github.com/repos/huggingface/peft/stats/contributors "HTTP/1.1 200 OK"
+2026-08-29 16:15:21,082 INFO  httpx | HTTP Request: GET https://api.github.com/repos/huggingface/trl "HTTP/1.1 200 OK"
+2026-08-29 16:15:21,502 INFO  httpx | HTTP Request: GET https://api.github.com/repos/huggingface/trl/stats/commit_activity "HTTP/1.1 200 OK"
+2026-08-29 16:15:22,033 INFO  httpx | HTTP Request: GET https://api.github.com/repos/huggingface/trl/releases?per_page=30 "HTTP/1.1 200 OK"
+2026-08-29 16:15:22,796 INFO  httpx | HTTP Request: GET https://api.github.com/repos/huggingface/trl/stats/contributors "HTTP/1.1 200 OK"
+2026-08-29 16:15:27,715 INFO  httpx | HTTP Request: GET https://api.github.com/repos/huggingface/datasets "HTTP/1.1 304 Not Modified"
+2026-08-29 16:15:28,163 INFO  httpx | HTTP Request: GET https://api.github.com/repos/huggingface/datasets/stats/commit_activity "HTTP/1.1 200 OK"
+2026-08-29 16:15:28,665 INFO  httpx | HTTP Request: GET https://api.github.com/repos/huggingface/datasets/releases?per_page=30 "HTTP/1.1 200 OK"
+2026-08-29 16:15:29,590 INFO  httpx | HTTP Request: GET https://api.github.com/repos/huggingface/datasets/stats/contributors "HTTP/1.1 200 OK"
+2026-08-29 16:15:34,765 INFO  httpx | HTTP Request: GET https://api.github.com/repos/huggingface/optimum "HTTP/1.1 304 Not Modified"
+2026-08-29 16:15:35,193 INFO  httpx | HTTP Request: GET https://api.github.com/repos/huggingface/optimum/stats/commit_activity "HTTP/1.1 200 OK"
+2026-08-29 16:15:35,686 INFO  httpx | HTTP Request: GET https://api.github.com/repos/huggingface/optimum/releases?per_page=30 "HTTP/1.1 200 OK"
+2026-08-29 16:15:36,476 INFO  httpx | HTTP Request: GET https://api.github.com/repos/huggingface/optimum/stats/contributors "HTTP/1.1 200 OK"
+2026-08-29 16:15:41,327 INFO  httpx | HTTP Request: GET https://api.github.com/repos/huggingface/text-embeddings-inference "HTTP/1.1 304 Not Modified"
+2026-08-29 16:15:41,732 INFO  httpx | HTTP Request: GET https://api.github.com/repos/huggingface/text-embeddings-inference/stats/commit_activity "HTTP/1.1 200 OK"
+2026-08-29 16:15:42,147 INFO  httpx | HTTP Request: GET https://api.github.com/repos/huggingface/text-embeddings-inference/releases?per_page=30 "HTTP/1.1 200 OK"
+2026-08-29 16:15:42,754 INFO  httpx | HTTP Request: GET https://api.github.com/repos/huggingface/text-embeddings-inference/stats/contributors "HTTP/1.1 200 OK"
+2026-08-29 16:15:47,120 INFO  httpx | HTTP Request: GET https://api.github.com/repos/huggingface/nanotron "HTTP/1.1 304 Not Modified"
+2026-08-29 16:15:47,634 INFO  httpx | HTTP Request: GET https://api.github.com/repos/huggingface/nanotron/stats/commit_activity "HTTP/1.1 200 OK"
+2026-08-29 16:15:48,071 INFO  httpx | HTTP Request: GET https://api.github.com/repos/huggingface/nanotron/releases?per_page=30 "HTTP/1.1 200 OK"
+2026-08-29 16:15:48,633 INFO  httpx | HTTP Request: GET https://api.github.com/repos/huggingface/nanotron/stats/contributors "HTTP/1.1 200 OK"
+2026-08-29 16:15:54,336 INFO  httpx | HTTP Request: GET https://api.github.com/repos/huggingface/setfit "HTTP/1.1 304 Not Modified"
+2026-08-29 16:15:54,762 INFO  httpx | HTTP Request: GET https://api.github.com/repos/huggingface/setfit/stats/commit_activity "HTTP/1.1 200 OK"
+2026-08-29 16:15:55,349 INFO  httpx | HTTP Request: GET https://api.github.com/repos/huggingface/setfit/releases?per_page=30 "HTTP/1.1 200 OK"
+2026-08-29 16:15:55,962 INFO  httpx | HTTP Request: GET https://api.github.com/repos/huggingface/setfit/stats/contributors "HTTP/1.1 200 OK"
+2026-08-29 16:16:00,640 INFO  httpx | HTTP Request: GET https://api.github.com/repos/huggingface/lighteval "HTTP/1.1 304 Not Modified"
+2026-08-29 16:16:01,066 INFO  httpx | HTTP Request: GET https://api.github.com/repos/huggingface/lighteval/stats/commit_activity "HTTP/1.1 200 OK"
+2026-08-29 16:16:01,500 INFO  httpx | HTTP Request: GET https://api.github.com/repos/huggingface/lighteval/releases?per_page=30 "HTTP/1.1 200 OK"
+2026-08-29 16:16:02,224 INFO  httpx | HTTP Request: GET https://api.github.com/repos/huggingface/lighteval/stats/contributors "HTTP/1.1 200 OK"
+2026-08-29 16:16:06,311 INFO  httpx | HTTP Request: GET https://api.github.com/repos/meta-llama/llama-models "HTTP/1.1 304 Not Modified"
+2026-08-29 16:16:06,746 INFO  httpx | HTTP Request: GET https://api.github.com/repos/meta-llama/llama-models/stats/commit_activity "HTTP/1.1 200 OK"
+2026-08-29 16:16:07,168 INFO  httpx | HTTP Request: GET https://api.github.com/repos/meta-llama/llama-models/releases?per_page=30 "HTTP/1.1 200 OK"
+2026-08-29 16:22:07,334 INFO  httpx | HTTP Request: GET https://api.github.com/repos/meta-llama/llama-models/stats/contributors "HTTP/1.1 200 OK"
+2026-08-29 16:22:07,419 ERROR github.sync_metrics | failed to sync meta-llama/llama-models: (raised as a result of Query-invoked autoflush; consider using a session.no_autoflush block if this flush is occurring prematurely)
+(psycopg.OperationalError) consuming input failed: server closed the connection unexpectedly
+	This probably means the server terminated abnormally
+	before or while processing the request.
+server closed the connection unexpectedly
+	This probably means the server terminated abnormally
+	before or while processing the request.
+[SQL: UPDATE repository SET next_sync_after=%(next_sync_after)s::TIMESTAMP WITH TIME ZONE, updated_at=now() WHERE repository.id = %(repository_id)s::INTEGER]
+[parameters: {'next_sync_after': datetime.datetime(2026, 8, 29, 11, 46, 5, 876967, tzinfo=datetime.timezone.utc), 'repository_id': 48}]
+(Background on this error at: https://sqlalche.me/e/20/e3q8)
+Traceback (most recent call last):
+  File "<frozen runpy>", line 203, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "C:\Users\PC\Atmos\workers\github\sync_metrics.py", line 539, in <module>
+    sys.exit(main())
+             ~~~~^^
+  File "C:\Users\PC\Atmos\workers\github\sync_metrics.py", line 531, in main
+    sync_metrics(stats, budget=args.budget, backfill_days=args.backfill_days)
+    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\PC\Atmos\workers\github\sync_metrics.py", line 421, in sync_metrics
+    full_name = repo.full_name
+                ^^^^^^^^^^^^^^
+  File "C:\Users\PC\Atmos\.venv\Lib\site-packages\sqlalchemy\orm\attributes.py", line 569, in __get__
+    return self.impl.get(state, dict_)  # type: ignore[no-any-return]
+           ~~~~~~~~~~~~~^^^^^^^^^^^^^^
+  File "C:\Users\PC\Atmos\.venv\Lib\site-packages\sqlalchemy\orm\attributes.py", line 1096, in get
+    value = self._fire_loader_callables(state, key, passive)
+  File "C:\Users\PC\Atmos\.venv\Lib\site-packages\sqlalchemy\orm\attributes.py", line 1126, in _fire_loader_callables
+    return state._load_expired(state, passive)
+           ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^
+  File "C:\Users\PC\Atmos\.venv\Lib\site-packages\sqlalchemy\orm\state.py", line 828, in _load_expired
+    self.manager.expired_attribute_loader(self, toload, passive)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\PC\Atmos\.venv\Lib\site-packages\sqlalchemy\orm\loading.py", line 1674, in load_scalar_attributes
+    result = load_on_ident(
+        session,
+    ...<4 lines>...
+        no_autoflush=no_autoflush,
+    )
+  File "C:\Users\PC\Atmos\.venv\Lib\site-packages\sqlalchemy\orm\loading.py", line 510, in load_on_ident
+    return load_on_pk_identity(
+        session,
+    ...<11 lines>...
+        is_user_refresh=is_user_refresh,
+    )
+  File "C:\Users\PC\Atmos\.venv\Lib\site-packages\sqlalchemy\orm\loading.py", line 695, in load_on_pk_identity
+    session.execute(
+    ~~~~~~~~~~~~~~~^
+        q,
+        ^^
+    ...<2 lines>...
+        bind_arguments=bind_arguments,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\PC\Atmos\.venv\Lib\site-packages\sqlalchemy\orm\session.py", line 2373, in execute
+    return self._execute_internal(
+           ~~~~~~~~~~~~~~~~~~~~~~^
+        statement,
+        ^^^^^^^^^^
+    ...<4 lines>...
+        _add_event=_add_event,
+        ^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\PC\Atmos\.venv\Lib\site-packages\sqlalchemy\orm\session.py", line 2261, in _execute_internal
+    conn = self._connection_for_bind(bind)
+  File "C:\Users\PC\Atmos\.venv\Lib\site-packages\sqlalchemy\orm\session.py", line 2113, in _connection_for_bind
+    return trans._connection_for_bind(engine, execution_options)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<string>", line 2, in _connection_for_bind
+  File "C:\Users\PC\Atmos\.venv\Lib\site-packages\sqlalchemy\orm\state_changes.py", line 101, in _go
+    self._raise_for_prerequisite_state(fn.__name__, current_state)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\PC\Atmos\.venv\Lib\site-packages\sqlalchemy\orm\session.py", line 975, in _raise_for_prerequisite_state
+    raise sa_exc.PendingRollbackError(
+    ...<6 lines>...
+    )
+sqlalchemy.exc.PendingRollbackError: This Session's transaction has been rolled back due to a previous exception during flush. To begin a new transaction with this Session, first issue Session.rollback(). Original exception was: (raised as a result of Query-invoked autoflush; consider using a session.no_autoflush block if this flush is occurring prematurely)
+(psycopg.OperationalError) consuming input failed: server closed the connection unexpectedly
+	This probably means the server terminated abnormally
+	before or while processing the request.
+server closed the connection unexpectedly
+	This probably means the server terminated abnormally
+	before or while processing the request.
+[SQL: UPDATE repository SET next_sync_after=%(next_sync_after)s::TIMESTAMP WITH TIME ZONE, updated_at=now() WHERE repository.id = %(repository_id)s::INTEGER]
+[parameters: {'next_sync_after': datetime.datetime(2026, 8, 29, 11, 46, 5, 876967, tzinfo=datetime.timezone.utc), 'repository_id': 48}]
+(Background on this error at: https://sqlalche.me/e/20/e3q8) (Background on this error at: https://sqlalche.me/e/20/7s2a)

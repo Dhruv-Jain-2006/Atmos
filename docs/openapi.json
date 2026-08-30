@@ -1,0 +1,2531 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Internet Weather API",
+    "description": "Internet Weather observes the public internet, detects meaningful change in the\nAI-engineering ecosystem, and explains it with traceable evidence.\n\nThe frontend consumes only this API. Provider APIs are never exposed directly.\n\nEvery data response carries a `freshness` object stating when the signals were\ncomputed and how many days of observation support them. Findings carry an\n`epistemic_status` of `observation`, `inference`, `hypothesis` or `unknown`, so\nspeculation is never presented as fact.",
+    "version": "0.1.0"
+  },
+  "paths": {
+    "/health": {
+      "get": {
+        "tags": [
+          "system"
+        ],
+        "summary": "Liveness and degradation",
+        "description": "Always 200.\n\nA degraded API is still a working API: contracts and vocabulary resolve\nwithout a database. Returning 500 here would make an ordinary cold start\nlook like an outage.",
+        "operationId": "health_health_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Health"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/status": {
+      "get": {
+        "tags": [
+          "system"
+        ],
+        "summary": "Is the observatory actually observing?",
+        "operationId": "status_api_status_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SystemStatus"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/vocabulary": {
+      "get": {
+        "tags": [
+          "meta"
+        ],
+        "summary": "Semantic vocabulary",
+        "operationId": "vocabulary_api_vocabulary_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Vocabulary"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/weather": {
+      "get": {
+        "tags": [
+          "weather"
+        ],
+        "summary": "Global conditions",
+        "operationId": "weather_api_weather_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WeatherOverview"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/trends": {
+      "get": {
+        "tags": [
+          "weather"
+        ],
+        "summary": "The Trends page, in one call",
+        "description": "Bounded by design: four ranked bands plus recent events.\n\nA single request so the page paints at once \u2014 assembling one screen from four\nround trips is what makes an interface feel like a dashboard.",
+        "operationId": "trends_api_trends_get",
+        "parameters": [
+          {
+            "name": "subdomain",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "$ref": "#/components/schemas/Subdomain"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Subdomain"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Trends"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/technologies": {
+      "get": {
+        "tags": [
+          "weather"
+        ],
+        "summary": "Technology universe",
+        "operationId": "technologies_api_technologies_get",
+        "parameters": [
+          {
+            "name": "subdomain",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "$ref": "#/components/schemas/Subdomain"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Subdomain"
+            }
+          },
+          {
+            "name": "state",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/WeatherState"
+                  }
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "State"
+            }
+          },
+          {
+            "name": "order",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "pattern": "^(rank|heating|cooling|anomaly|stars|name)$",
+              "default": "rank",
+              "title": "Order"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 200,
+              "minimum": 1,
+              "default": 50,
+              "title": "Limit"
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "default": 0,
+              "title": "Offset"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TechnologyList"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/technologies/{slug}": {
+      "get": {
+        "tags": [
+          "weather"
+        ],
+        "summary": "Research page header",
+        "operationId": "technology_api_technologies__slug__get",
+        "parameters": [
+          {
+            "name": "slug",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "maxLength": 80,
+              "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$",
+              "examples": [
+                "mcp"
+              ],
+              "title": "Slug"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TechnologyDetail"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/technologies/{slug}/history": {
+      "get": {
+        "tags": [
+          "weather"
+        ],
+        "summary": "Signal history",
+        "operationId": "technology_history_api_technologies__slug__history_get",
+        "parameters": [
+          {
+            "name": "slug",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "maxLength": 80,
+              "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$",
+              "examples": [
+                "mcp"
+              ],
+              "title": "Slug"
+            }
+          },
+          {
+            "name": "days",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 365,
+              "minimum": 7,
+              "default": 90,
+              "title": "Days"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TechnologyHistory"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/technologies/{slug}/relationships": {
+      "get": {
+        "tags": [
+          "weather"
+        ],
+        "summary": "Related technologies",
+        "operationId": "technology_relationships_api_technologies__slug__relationships_get",
+        "parameters": [
+          {
+            "name": "slug",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "maxLength": 80,
+              "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$",
+              "examples": [
+                "mcp"
+              ],
+              "title": "Slug"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TechnologyRelationships"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/events": {
+      "get": {
+        "tags": [
+          "weather"
+        ],
+        "summary": "Detected ecosystem events",
+        "operationId": "events_api_events_get",
+        "parameters": [
+          {
+            "name": "subdomain",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "$ref": "#/components/schemas/Subdomain"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Subdomain"
+            }
+          },
+          {
+            "name": "technology",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "maxLength": 80,
+                  "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "examples": [
+                "mcp"
+              ],
+              "title": "Technology"
+            }
+          },
+          {
+            "name": "event_type",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/EventType"
+                  }
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Event Type"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 100,
+              "minimum": 1,
+              "default": 25,
+              "title": "Limit"
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "default": 0,
+              "title": "Offset"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EventList"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/events/{event_id}": {
+      "get": {
+        "tags": [
+          "weather"
+        ],
+        "summary": "Event with evidence",
+        "operationId": "event_api_events__event_id__get",
+        "parameters": [
+          {
+            "name": "event_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "title": "Event Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EventDetail"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/research": {
+      "post": {
+        "tags": [
+          "research"
+        ],
+        "summary": "Queue an investigation",
+        "description": "Returns immediately with a job. The frontend never blocks on research.",
+        "operationId": "create_api_research_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ResearchRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "202": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResearchJob"
+                }
+              }
+            }
+          },
+          "501": {
+            "description": "The research engine is not implemented in this slice. The contract is final; the implementation follows the first vertical slice."
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/research/{research_id}": {
+      "get": {
+        "tags": [
+          "research"
+        ],
+        "summary": "Poll an investigation",
+        "operationId": "read_api_research__research_id__get",
+        "parameters": [
+          {
+            "name": "research_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "maxLength": 64,
+              "title": "Research Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResearchResult"
+                }
+              }
+            }
+          },
+          "501": {
+            "description": "The research engine is not implemented in this slice. The contract is final; the implementation follows the first vertical slice."
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/research/{research_id}/chat": {
+      "post": {
+        "tags": [
+          "research"
+        ],
+        "summary": "Ask the Research Copilot",
+        "description": "Contextual to one research topic, grounded in Internet Weather data.\n\nNot a general-purpose chatbot: an answer it cannot ground in stored evidence\nis an answer it must decline to give.",
+        "operationId": "chat_api_research__research_id__chat_post",
+        "parameters": [
+          {
+            "name": "research_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "maxLength": 64,
+              "title": "Research Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ChatRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ChatReply"
+                }
+              }
+            }
+          },
+          "501": {
+            "description": "The research engine is not implemented in this slice. The contract is final; the implementation follows the first vertical slice."
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "ChatReply": {
+        "properties": {
+          "reply": {
+            "type": "string",
+            "title": "Reply"
+          },
+          "epistemic_status": {
+            "$ref": "#/components/schemas/EpistemicStatus"
+          },
+          "evidence": {
+            "items": {
+              "$ref": "#/components/schemas/EvidenceLink"
+            },
+            "type": "array",
+            "title": "Evidence"
+          },
+          "data_used": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Data Used"
+          }
+        },
+        "type": "object",
+        "required": [
+          "reply",
+          "epistemic_status"
+        ],
+        "title": "ChatReply",
+        "description": "A Copilot answer. Grounded in Internet Weather data or it does not ship."
+      },
+      "ChatRequest": {
+        "properties": {
+          "message": {
+            "type": "string",
+            "maxLength": 2000,
+            "minLength": 1,
+            "title": "Message"
+          }
+        },
+        "type": "object",
+        "required": [
+          "message"
+        ],
+        "title": "ChatRequest"
+      },
+      "DataFreshness": {
+        "properties": {
+          "as_of": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "As Of",
+            "description": "ISO date of the latest computed signal day."
+          },
+          "observed_days": {
+            "type": "integer",
+            "title": "Observed Days",
+            "description": "Distinct days of observation backing these signals.",
+            "default": 0
+          },
+          "has_data": {
+            "type": "boolean",
+            "title": "Has Data",
+            "default": false
+          },
+          "degraded_reason": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Degraded Reason",
+            "description": "Why data is missing, when it is. Null when has_data is true."
+          }
+        },
+        "type": "object",
+        "title": "DataFreshness",
+        "description": "How current, and how trustworthy, the numbers behind a response are.\n\nPresent on every data response. A platform that claims to observe the\ninternet has to be explicit about when it last actually looked."
+      },
+      "DatabaseHealth": {
+        "properties": {
+          "configured": {
+            "type": "boolean",
+            "title": "Configured"
+          },
+          "reachable": {
+            "type": "boolean",
+            "title": "Reachable"
+          },
+          "error": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Error"
+          }
+        },
+        "type": "object",
+        "required": [
+          "configured",
+          "reachable"
+        ],
+        "title": "DatabaseHealth"
+      },
+      "EpistemicStatus": {
+        "type": "string",
+        "enum": [
+          "observation",
+          "inference",
+          "hypothesis",
+          "unknown"
+        ],
+        "title": "EpistemicStatus",
+        "description": "Required label on every generated claim.\n\nEnforced at the contract level so speculation can never be presented as\nfact. See CLAUDE.md, \"LLM Philosophy\"."
+      },
+      "EventDetail": {
+        "properties": {
+          "id": {
+            "type": "integer",
+            "title": "Id"
+          },
+          "event_type": {
+            "$ref": "#/components/schemas/EventType"
+          },
+          "occurred_on": {
+            "type": "string",
+            "format": "date",
+            "title": "Occurred On"
+          },
+          "title": {
+            "type": "string",
+            "title": "Title"
+          },
+          "summary": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Summary"
+          },
+          "magnitude": {
+            "type": "number",
+            "maximum": 1.0,
+            "minimum": 0.0,
+            "title": "Magnitude"
+          },
+          "confidence": {
+            "type": "number",
+            "maximum": 1.0,
+            "minimum": 0.0,
+            "title": "Confidence"
+          },
+          "epistemic_status": {
+            "$ref": "#/components/schemas/EpistemicStatus"
+          },
+          "technology_slug": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Technology Slug"
+          },
+          "technology_name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Technology Name"
+          },
+          "repository_full_name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Repository Full Name"
+          },
+          "occurred_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Occurred At"
+          },
+          "detected_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Detected At"
+          },
+          "evidence": {
+            "items": {
+              "$ref": "#/components/schemas/EvidenceLink"
+            },
+            "type": "array",
+            "title": "Evidence"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "event_type",
+          "occurred_on",
+          "title",
+          "magnitude",
+          "confidence",
+          "epistemic_status"
+        ],
+        "title": "EventDetail"
+      },
+      "EventList": {
+        "properties": {
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/EventSummary"
+            },
+            "type": "array",
+            "title": "Items"
+          },
+          "page": {
+            "$ref": "#/components/schemas/Page"
+          },
+          "freshness": {
+            "$ref": "#/components/schemas/DataFreshness"
+          }
+        },
+        "type": "object",
+        "required": [
+          "items",
+          "page",
+          "freshness"
+        ],
+        "title": "EventList"
+      },
+      "EventSummary": {
+        "properties": {
+          "id": {
+            "type": "integer",
+            "title": "Id"
+          },
+          "event_type": {
+            "$ref": "#/components/schemas/EventType"
+          },
+          "occurred_on": {
+            "type": "string",
+            "format": "date",
+            "title": "Occurred On"
+          },
+          "title": {
+            "type": "string",
+            "title": "Title"
+          },
+          "summary": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Summary"
+          },
+          "magnitude": {
+            "type": "number",
+            "maximum": 1.0,
+            "minimum": 0.0,
+            "title": "Magnitude"
+          },
+          "confidence": {
+            "type": "number",
+            "maximum": 1.0,
+            "minimum": 0.0,
+            "title": "Confidence"
+          },
+          "epistemic_status": {
+            "$ref": "#/components/schemas/EpistemicStatus"
+          },
+          "technology_slug": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Technology Slug"
+          },
+          "technology_name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Technology Name"
+          },
+          "repository_full_name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Repository Full Name"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "event_type",
+          "occurred_on",
+          "title",
+          "magnitude",
+          "confidence",
+          "epistemic_status"
+        ],
+        "title": "EventSummary"
+      },
+      "EventType": {
+        "type": "string",
+        "enum": [
+          "release",
+          "star_spike",
+          "anomaly",
+          "new_repository",
+          "archived",
+          "renamed"
+        ],
+        "title": "EventType",
+        "description": "Discrete ecosystem events."
+      },
+      "EvidenceLink": {
+        "properties": {
+          "label": {
+            "type": "string",
+            "title": "Label"
+          },
+          "url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Url"
+          },
+          "detail": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Detail",
+            "description": "The measured value that triggered this, when applicable."
+          }
+        },
+        "type": "object",
+        "required": [
+          "label"
+        ],
+        "title": "EvidenceLink",
+        "description": "A traceable source for a claim.\n\nPresent on every event so \"show me the evidence\" is answerable without a\nround trip through the research engine."
+      },
+      "Finding": {
+        "properties": {
+          "statement": {
+            "type": "string",
+            "title": "Statement"
+          },
+          "epistemic_status": {
+            "$ref": "#/components/schemas/EpistemicStatus"
+          },
+          "confidence": {
+            "type": "number",
+            "maximum": 1.0,
+            "minimum": 0.0,
+            "title": "Confidence"
+          },
+          "evidence": {
+            "items": {
+              "$ref": "#/components/schemas/EvidenceLink"
+            },
+            "type": "array",
+            "title": "Evidence"
+          },
+          "counter_evidence": {
+            "items": {
+              "$ref": "#/components/schemas/EvidenceLink"
+            },
+            "type": "array",
+            "title": "Counter Evidence"
+          }
+        },
+        "type": "object",
+        "required": [
+          "statement",
+          "epistemic_status",
+          "confidence"
+        ],
+        "title": "Finding",
+        "description": "One claim, with its epistemic standing attached.\n\n``epistemic_status`` is required, not optional. That is the mechanism by\nwhich speculation cannot be presented as fact."
+      },
+      "HTTPValidationError": {
+        "properties": {
+          "detail": {
+            "items": {
+              "$ref": "#/components/schemas/ValidationError"
+            },
+            "type": "array",
+            "title": "Detail"
+          }
+        },
+        "type": "object",
+        "title": "HTTPValidationError"
+      },
+      "Health": {
+        "properties": {
+          "status": {
+            "type": "string",
+            "title": "Status",
+            "description": "ok | degraded"
+          },
+          "version": {
+            "type": "string",
+            "title": "Version"
+          },
+          "environment": {
+            "type": "string",
+            "title": "Environment"
+          },
+          "database": {
+            "$ref": "#/components/schemas/DatabaseHealth"
+          },
+          "checked_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Checked At"
+          }
+        },
+        "type": "object",
+        "required": [
+          "status",
+          "version",
+          "environment",
+          "database",
+          "checked_at"
+        ],
+        "title": "Health",
+        "description": "Liveness plus honest degradation.\n\n``status`` is ``ok`` when data can be served and ``degraded`` when the API is\nup but has no database. Degraded is a real product state, not a failure: the\ncontracts and vocabulary still resolve."
+      },
+      "HistoryPoint": {
+        "properties": {
+          "day": {
+            "type": "string",
+            "format": "date",
+            "title": "Day"
+          },
+          "weather_state": {
+            "$ref": "#/components/schemas/WeatherState"
+          },
+          "momentum": {
+            "type": "number",
+            "title": "Momentum"
+          },
+          "confidence": {
+            "type": "number",
+            "title": "Confidence"
+          },
+          "stars_total": {
+            "type": "integer",
+            "title": "Stars Total"
+          },
+          "stars_delta_1d": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Stars Delta 1D"
+          },
+          "star_velocity_7d": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Star Velocity 7D"
+          },
+          "activity_score": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Activity Score"
+          }
+        },
+        "type": "object",
+        "required": [
+          "day",
+          "weather_state",
+          "momentum",
+          "confidence",
+          "stars_total"
+        ],
+        "title": "HistoryPoint"
+      },
+      "IngestionSummary": {
+        "properties": {
+          "source": {
+            "type": "string",
+            "title": "Source"
+          },
+          "job": {
+            "type": "string",
+            "title": "Job"
+          },
+          "status": {
+            "type": "string",
+            "title": "Status"
+          },
+          "started_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Started At"
+          },
+          "finished_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Finished At"
+          },
+          "api_calls": {
+            "type": "integer",
+            "title": "Api Calls",
+            "default": 0
+          },
+          "api_calls_saved": {
+            "type": "integer",
+            "title": "Api Calls Saved",
+            "default": 0
+          },
+          "records_written": {
+            "type": "integer",
+            "title": "Records Written",
+            "default": 0
+          },
+          "rate_limit_remaining": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Rate Limit Remaining"
+          },
+          "error": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Error"
+          }
+        },
+        "type": "object",
+        "required": [
+          "source",
+          "job",
+          "status"
+        ],
+        "title": "IngestionSummary",
+        "description": "Last run per job. How you know whether the observatory is actually looking."
+      },
+      "Page": {
+        "properties": {
+          "total": {
+            "type": "integer",
+            "title": "Total"
+          },
+          "limit": {
+            "type": "integer",
+            "title": "Limit"
+          },
+          "offset": {
+            "type": "integer",
+            "title": "Offset"
+          }
+        },
+        "type": "object",
+        "required": [
+          "total",
+          "limit",
+          "offset"
+        ],
+        "title": "Page"
+      },
+      "RelatedTechnology": {
+        "properties": {
+          "slug": {
+            "type": "string",
+            "title": "Slug"
+          },
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "subdomain": {
+            "$ref": "#/components/schemas/Subdomain"
+          },
+          "weather_state": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/WeatherState"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "relation_type": {
+            "$ref": "#/components/schemas/RelationshipType"
+          },
+          "strength": {
+            "type": "number",
+            "maximum": 1.0,
+            "minimum": 0.0,
+            "title": "Strength"
+          },
+          "epistemic_status": {
+            "$ref": "#/components/schemas/EpistemicStatus"
+          }
+        },
+        "type": "object",
+        "required": [
+          "slug",
+          "name",
+          "subdomain",
+          "relation_type",
+          "strength",
+          "epistemic_status"
+        ],
+        "title": "RelatedTechnology"
+      },
+      "RelationshipType": {
+        "type": "string",
+        "enum": [
+          "depends_on",
+          "alternative_to",
+          "complements",
+          "co_occurs"
+        ],
+        "title": "RelationshipType",
+        "description": "Edges between technologies, used by Explore and the Research page."
+      },
+      "RepoRelation": {
+        "type": "string",
+        "enum": [
+          "canonical",
+          "implementation",
+          "integration",
+          "ecosystem"
+        ],
+        "title": "RepoRelation",
+        "description": "How a repository relates to the technology it sensors."
+      },
+      "RepositorySensor": {
+        "properties": {
+          "full_name": {
+            "type": "string",
+            "title": "Full Name"
+          },
+          "relation": {
+            "$ref": "#/components/schemas/RepoRelation"
+          },
+          "weight": {
+            "type": "number",
+            "title": "Weight"
+          },
+          "stars": {
+            "type": "integer",
+            "title": "Stars"
+          },
+          "forks": {
+            "type": "integer",
+            "title": "Forks"
+          },
+          "primary_language": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Primary Language"
+          },
+          "is_archived": {
+            "type": "boolean",
+            "title": "Is Archived",
+            "default": false
+          },
+          "pushed_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Pushed At"
+          },
+          "url": {
+            "type": "string",
+            "title": "Url"
+          }
+        },
+        "type": "object",
+        "required": [
+          "full_name",
+          "relation",
+          "weight",
+          "stars",
+          "forks",
+          "url"
+        ],
+        "title": "RepositorySensor",
+        "description": "A repository observed on behalf of a technology."
+      },
+      "ResearchJob": {
+        "properties": {
+          "research_id": {
+            "type": "string",
+            "title": "Research Id"
+          },
+          "status": {
+            "$ref": "#/components/schemas/ResearchStatus"
+          },
+          "technology_slug": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Technology Slug"
+          },
+          "question": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Question"
+          },
+          "created_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Created At"
+          },
+          "updated_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Updated At"
+          },
+          "progress_note": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Progress Note"
+          }
+        },
+        "type": "object",
+        "required": [
+          "research_id",
+          "status"
+        ],
+        "title": "ResearchJob"
+      },
+      "ResearchRequest": {
+        "properties": {
+          "technology_slug": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Technology Slug"
+          },
+          "event_id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Event Id"
+          },
+          "question": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 500
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Question",
+            "description": "Optional focus, e.g. 'Why is MCP accelerating?'"
+          }
+        },
+        "type": "object",
+        "title": "ResearchRequest"
+      },
+      "ResearchResult": {
+        "properties": {
+          "research_id": {
+            "type": "string",
+            "title": "Research Id"
+          },
+          "status": {
+            "$ref": "#/components/schemas/ResearchStatus"
+          },
+          "technology_slug": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Technology Slug"
+          },
+          "question": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Question"
+          },
+          "created_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Created At"
+          },
+          "updated_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Updated At"
+          },
+          "progress_note": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Progress Note"
+          },
+          "executive_finding": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/Finding"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "supporting_findings": {
+            "items": {
+              "$ref": "#/components/schemas/Finding"
+            },
+            "type": "array",
+            "title": "Supporting Findings"
+          },
+          "unknowns": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Unknowns",
+            "description": "What the evidence could not settle."
+          },
+          "watch_next": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Watch Next"
+          }
+        },
+        "type": "object",
+        "required": [
+          "research_id",
+          "status"
+        ],
+        "title": "ResearchResult"
+      },
+      "ResearchStatus": {
+        "type": "string",
+        "enum": [
+          "queued",
+          "collecting",
+          "analyzing",
+          "synthesizing",
+          "completed",
+          "failed"
+        ],
+        "title": "ResearchStatus"
+      },
+      "SignalSnapshot": {
+        "properties": {
+          "momentum": {
+            "type": "number",
+            "title": "Momentum",
+            "description": "Normalised -1..1 composite. Positive = accelerating."
+          },
+          "confidence": {
+            "type": "number",
+            "maximum": 1.0,
+            "minimum": 0.0,
+            "title": "Confidence"
+          },
+          "stars_total": {
+            "type": "integer",
+            "title": "Stars Total"
+          },
+          "stars_delta_7d": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Stars Delta 7D"
+          },
+          "stars_delta_28d": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Stars Delta 28D"
+          },
+          "star_velocity_7d": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Star Velocity 7D",
+            "description": "Weighted stars/day over the trailing 7 days."
+          },
+          "star_acceleration": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Star Acceleration",
+            "description": "Change in velocity \u2014 what 'heating up' actually means."
+          },
+          "activity_score": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Activity Score"
+          },
+          "commit_velocity_7d": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Commit Velocity 7D"
+          },
+          "release_count_28d": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Release Count 28D"
+          },
+          "contributor_count_28d": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Contributor Count 28D"
+          },
+          "anomaly_z": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Anomaly Z",
+            "description": "Standard deviations from this technology's own baseline."
+          },
+          "repo_count": {
+            "type": "integer",
+            "title": "Repo Count",
+            "default": 0
+          },
+          "active_repo_count": {
+            "type": "integer",
+            "title": "Active Repo Count",
+            "default": 0
+          },
+          "sample_days": {
+            "type": "integer",
+            "title": "Sample Days",
+            "description": "Observed days backing this row. Low values mean low confidence.",
+            "default": 0
+          }
+        },
+        "type": "object",
+        "required": [
+          "momentum",
+          "confidence",
+          "stars_total"
+        ],
+        "title": "SignalSnapshot",
+        "description": "The measured numbers behind a weather state.\n\nEvery field here is an OBSERVATION or a deterministic transform of one. The\nUI may show these without an epistemic caveat."
+      },
+      "Subdomain": {
+        "type": "string",
+        "enum": [
+          "agentic_ai",
+          "llm_ecosystem",
+          "rag",
+          "ai_infra",
+          "multimodal",
+          "mlops",
+          "ai_security"
+        ],
+        "title": "Subdomain",
+        "description": "Technology subdomains within the AI-engineering domain."
+      },
+      "SubdomainClimate": {
+        "properties": {
+          "subdomain": {
+            "$ref": "#/components/schemas/Subdomain"
+          },
+          "label": {
+            "type": "string",
+            "title": "Label"
+          },
+          "technology_count": {
+            "type": "integer",
+            "title": "Technology Count"
+          },
+          "mean_momentum": {
+            "type": "number",
+            "title": "Mean Momentum"
+          },
+          "dominant_state": {
+            "$ref": "#/components/schemas/WeatherState"
+          },
+          "state_counts": {
+            "additionalProperties": {
+              "type": "integer"
+            },
+            "propertyNames": {
+              "$ref": "#/components/schemas/WeatherState"
+            },
+            "type": "object",
+            "title": "State Counts"
+          }
+        },
+        "type": "object",
+        "required": [
+          "subdomain",
+          "label",
+          "technology_count",
+          "mean_momentum",
+          "dominant_state"
+        ],
+        "title": "SubdomainClimate",
+        "description": "Aggregate weather for one subdomain \u2014 the radar's regional readout."
+      },
+      "SubdomainInfo": {
+        "properties": {
+          "key": {
+            "$ref": "#/components/schemas/Subdomain"
+          },
+          "label": {
+            "type": "string",
+            "title": "Label"
+          }
+        },
+        "type": "object",
+        "required": [
+          "key",
+          "label"
+        ],
+        "title": "SubdomainInfo"
+      },
+      "SystemStatus": {
+        "properties": {
+          "health": {
+            "$ref": "#/components/schemas/Health"
+          },
+          "ingestion": {
+            "items": {
+              "$ref": "#/components/schemas/IngestionSummary"
+            },
+            "type": "array",
+            "title": "Ingestion"
+          },
+          "tracked_technologies": {
+            "type": "integer",
+            "title": "Tracked Technologies",
+            "default": 0
+          },
+          "tracked_repositories": {
+            "type": "integer",
+            "title": "Tracked Repositories",
+            "default": 0
+          },
+          "observed_days": {
+            "type": "integer",
+            "title": "Observed Days",
+            "default": 0
+          }
+        },
+        "type": "object",
+        "required": [
+          "health"
+        ],
+        "title": "SystemStatus"
+      },
+      "TechnologyCard": {
+        "properties": {
+          "slug": {
+            "type": "string",
+            "title": "Slug"
+          },
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "subdomain": {
+            "$ref": "#/components/schemas/Subdomain"
+          },
+          "summary": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Summary"
+          },
+          "headline": {
+            "type": "boolean",
+            "title": "Headline",
+            "default": false
+          },
+          "weather_state": {
+            "$ref": "#/components/schemas/WeatherState"
+          },
+          "signals": {
+            "$ref": "#/components/schemas/SignalSnapshot"
+          },
+          "spark": {
+            "items": {
+              "type": "number"
+            },
+            "type": "array",
+            "title": "Spark"
+          },
+          "explanation": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Explanation"
+          },
+          "epistemic_status": {
+            "$ref": "#/components/schemas/EpistemicStatus",
+            "default": "observation"
+          },
+          "rank_overall": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Rank Overall"
+          },
+          "rank_subdomain": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Rank Subdomain"
+          },
+          "as_of": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "As Of"
+          }
+        },
+        "type": "object",
+        "required": [
+          "slug",
+          "name",
+          "subdomain",
+          "weather_state",
+          "signals"
+        ],
+        "title": "TechnologyCard",
+        "description": "One technology as it appears on Trends, including its hover preview.\n\nDeliberately self-sufficient: the hover intelligence preview must not fire a\nsecond request, so the sparkline and explanation ship with the card."
+      },
+      "TechnologyDetail": {
+        "properties": {
+          "slug": {
+            "type": "string",
+            "title": "Slug"
+          },
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "subdomain": {
+            "$ref": "#/components/schemas/Subdomain"
+          },
+          "summary": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Summary"
+          },
+          "aliases": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Aliases"
+          },
+          "headline": {
+            "type": "boolean",
+            "title": "Headline",
+            "default": false
+          },
+          "first_seen_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "First Seen At"
+          },
+          "weather_state": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/WeatherState"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "signals": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/SignalSnapshot"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "explanation": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Explanation"
+          },
+          "epistemic_status": {
+            "$ref": "#/components/schemas/EpistemicStatus",
+            "default": "observation"
+          },
+          "repositories": {
+            "items": {
+              "$ref": "#/components/schemas/RepositorySensor"
+            },
+            "type": "array",
+            "title": "Repositories"
+          },
+          "freshness": {
+            "$ref": "#/components/schemas/DataFreshness"
+          }
+        },
+        "type": "object",
+        "required": [
+          "slug",
+          "name",
+          "subdomain",
+          "freshness"
+        ],
+        "title": "TechnologyDetail",
+        "description": "The Research page header: what we know, and what it rests on."
+      },
+      "TechnologyHistory": {
+        "properties": {
+          "slug": {
+            "type": "string",
+            "title": "Slug"
+          },
+          "points": {
+            "items": {
+              "$ref": "#/components/schemas/HistoryPoint"
+            },
+            "type": "array",
+            "title": "Points"
+          },
+          "freshness": {
+            "$ref": "#/components/schemas/DataFreshness"
+          }
+        },
+        "type": "object",
+        "required": [
+          "slug",
+          "points",
+          "freshness"
+        ],
+        "title": "TechnologyHistory"
+      },
+      "TechnologyList": {
+        "properties": {
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/TechnologyCard"
+            },
+            "type": "array",
+            "title": "Items"
+          },
+          "page": {
+            "$ref": "#/components/schemas/Page"
+          },
+          "freshness": {
+            "$ref": "#/components/schemas/DataFreshness"
+          }
+        },
+        "type": "object",
+        "required": [
+          "items",
+          "page",
+          "freshness"
+        ],
+        "title": "TechnologyList"
+      },
+      "TechnologyRelationships": {
+        "properties": {
+          "slug": {
+            "type": "string",
+            "title": "Slug"
+          },
+          "related": {
+            "items": {
+              "$ref": "#/components/schemas/RelatedTechnology"
+            },
+            "type": "array",
+            "title": "Related"
+          },
+          "freshness": {
+            "$ref": "#/components/schemas/DataFreshness"
+          }
+        },
+        "type": "object",
+        "required": [
+          "slug",
+          "related",
+          "freshness"
+        ],
+        "title": "TechnologyRelationships"
+      },
+      "Trends": {
+        "properties": {
+          "as_of": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "As Of"
+          },
+          "overview": {
+            "$ref": "#/components/schemas/WeatherOverview"
+          },
+          "heating": {
+            "items": {
+              "$ref": "#/components/schemas/TechnologyCard"
+            },
+            "type": "array",
+            "title": "Heating"
+          },
+          "cooling": {
+            "items": {
+              "$ref": "#/components/schemas/TechnologyCard"
+            },
+            "type": "array",
+            "title": "Cooling"
+          },
+          "emerging": {
+            "items": {
+              "$ref": "#/components/schemas/TechnologyCard"
+            },
+            "type": "array",
+            "title": "Emerging"
+          },
+          "anomalies": {
+            "items": {
+              "$ref": "#/components/schemas/TechnologyCard"
+            },
+            "type": "array",
+            "title": "Anomalies"
+          },
+          "events": {
+            "items": {
+              "$ref": "#/components/schemas/EventSummary"
+            },
+            "type": "array",
+            "title": "Events"
+          },
+          "freshness": {
+            "$ref": "#/components/schemas/DataFreshness"
+          }
+        },
+        "type": "object",
+        "required": [
+          "overview",
+          "freshness"
+        ],
+        "title": "Trends",
+        "description": "Everything the Trends page renders."
+      },
+      "ValidationError": {
+        "properties": {
+          "loc": {
+            "items": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "integer"
+                }
+              ]
+            },
+            "type": "array",
+            "title": "Location"
+          },
+          "msg": {
+            "type": "string",
+            "title": "Message"
+          },
+          "type": {
+            "type": "string",
+            "title": "Error Type"
+          },
+          "input": {
+            "title": "Input"
+          },
+          "ctx": {
+            "type": "object",
+            "title": "Context"
+          }
+        },
+        "type": "object",
+        "required": [
+          "loc",
+          "msg",
+          "type"
+        ],
+        "title": "ValidationError"
+      },
+      "Vocabulary": {
+        "properties": {
+          "weather_states": {
+            "items": {
+              "$ref": "#/components/schemas/WeatherStateInfo"
+            },
+            "type": "array",
+            "title": "Weather States"
+          },
+          "subdomains": {
+            "items": {
+              "$ref": "#/components/schemas/SubdomainInfo"
+            },
+            "type": "array",
+            "title": "Subdomains"
+          },
+          "epistemic_statuses": {
+            "items": {
+              "$ref": "#/components/schemas/EpistemicStatus"
+            },
+            "type": "array",
+            "title": "Epistemic Statuses"
+          }
+        },
+        "type": "object",
+        "required": [
+          "weather_states",
+          "subdomains",
+          "epistemic_statuses"
+        ],
+        "title": "Vocabulary",
+        "description": "Everything the UI needs to label data it did not compute."
+      },
+      "WeatherOverview": {
+        "properties": {
+          "as_of": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "As Of"
+          },
+          "technology_count": {
+            "type": "integer",
+            "title": "Technology Count",
+            "default": 0
+          },
+          "state_counts": {
+            "additionalProperties": {
+              "type": "integer"
+            },
+            "propertyNames": {
+              "$ref": "#/components/schemas/WeatherState"
+            },
+            "type": "object",
+            "title": "State Counts"
+          },
+          "mean_momentum": {
+            "type": "number",
+            "title": "Mean Momentum",
+            "default": 0.0
+          },
+          "subdomains": {
+            "items": {
+              "$ref": "#/components/schemas/SubdomainClimate"
+            },
+            "type": "array",
+            "title": "Subdomains"
+          },
+          "freshness": {
+            "$ref": "#/components/schemas/DataFreshness"
+          }
+        },
+        "type": "object",
+        "required": [
+          "freshness"
+        ],
+        "title": "WeatherOverview",
+        "description": "Global conditions. The one-glance answer."
+      },
+      "WeatherState": {
+        "type": "string",
+        "enum": [
+          "hot",
+          "emerging",
+          "stable",
+          "cooling",
+          "breaking",
+          "storm"
+        ],
+        "title": "WeatherState",
+        "description": "Computed atmospheric state of a technology.\n\nNEVER assign these by hand. They are the output of\n``internetweather.analysis.weather_state.classify`` operating on measured\nsignals. A technology with insufficient history is STABLE with low\nconfidence \u2014 not EMERGING."
+      },
+      "WeatherStateInfo": {
+        "properties": {
+          "state": {
+            "$ref": "#/components/schemas/WeatherState"
+          },
+          "glyph": {
+            "type": "string",
+            "title": "Glyph"
+          },
+          "label": {
+            "type": "string",
+            "title": "Label"
+          },
+          "meaning": {
+            "type": "string",
+            "title": "Meaning"
+          }
+        },
+        "type": "object",
+        "required": [
+          "state",
+          "glyph",
+          "label",
+          "meaning"
+        ],
+        "title": "WeatherStateInfo",
+        "description": "Presentation metadata for one weather state.\n\nServed so the frontend renders the semantic vocabulary from the API instead\nof hardcoding glyphs that could drift from the classifier."
+      }
+    }
+  },
+  "tags": [
+    {
+      "name": "weather",
+      "description": "Conditions, trends, technologies and events."
+    },
+    {
+      "name": "research",
+      "description": "Asynchronous investigation. Contract defined."
+    },
+    {
+      "name": "meta",
+      "description": "Semantic vocabulary shared with the frontend."
+    },
+    {
+      "name": "system",
+      "description": "Liveness, degradation and ingestion state."
+    }
+  ]
+}

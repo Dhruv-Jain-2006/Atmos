@@ -1,0 +1,223 @@
+name: Atmos Daily Pipeline
+
+# Schedule: 12:15 UTC = 17:45 IST = 5:45 PM IST
+# The late-day timing ensures GitHub activity snapshots capture most of the day's
+# pushes, releases, and other activity.
+on:
+  schedule:
+    - cron: "15 12 * * *"
+  workflow_dispatch:
+    inputs:
+      force_full_sync:
+        description: "Process all repos regardless of next_sync_after"
+        required: false
+        default: "false"
+        type: boolean
+
+# Prevent two daily runs from overlapping.  If a previous run is still
+# in-progress (e.g. large backfill), the scheduled run is skipped rather
+# than stacking.
+concurrency:
+  group: atmosphere-daily-pipeline
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+env:
+  # Force non-interactive, non-development mode
+  ENVIRONMENT: production
+  LOG_LEVEL: INFO
+
+jobs:
+  pipeline:
+    name: Ingest + Detect
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      # ── Checkout ──────────────────────────────────────────────────────────
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # ── Python / uv ──────────────────────────────────────────────────────
+      - name: Install uv
+        uses: astral-sh/setup-uv@v6
+        with:
+          enable-cache: true
+
+      - name: Set up Python
+        run: uv python install 3.14
+
+      - name: Install dependencies
+        run: uv sync --frozen
+
+      # ── Secrets as environment ───────────────────────────────────────────
+      # Secrets are NOT printed.  They are injected as environment variables
+      # that the Python workers read via pydantic-settings.
+      - name: Configure environment
+        run: |
+          echo "DATABASE_URL_DIRECT is set: ${{ secrets.DATABASE_URL_DIRECT != '' }}"
+          echo "GITHUB_TOKEN is set: ${{ secrets.GITHUB_TOKEN != '' }}"
+        # Do NOT echo the actual values
+
+      # ── Pre-flight: rate-limit check ─────────────────────────────────────
+      - name: Check GitHub rate limit
+        run: |
+          uv run python -c "
+          import httpx, os, sys
+          token = os.environ.get('GITHUB_TOKEN', '')
+          if not token:
+              print('::error::GITHUB_TOKEN not configured')
+              sys.exit(1)
+          headers = {'Authorization': f'token {token}', 'Accept': 'application/vnd.github.v3+json'}
+          r = httpx.get('https://api.github.com/rate_limit', headers=headers, timeout=10)
+          if r.status_code != 200:
+              print(f'::error::Failed to check rate limit: {r.status_code}')
+              sys.exit(1)
+          core = r.json()['resources']['core']
+          remaining = core['remaining']
+          reset = core['reset']
+          import datetime
+          reset_dt = datetime.datetime.fromtimestamp(reset, tz=datetime.timezone.utc)
+          print(f'GitHub rate limit: {remaining} remaining, resets at {reset_dt.isoformat()}')
+          if remaining < 100:
+              print(f'::warning::Low rate limit: {remaining} remaining')
+          "
+
+      # ── Step 1: GitHub metrics ingestion ─────────────────────────────────
+      - name: Sync GitHub metrics
+        id: sync
+        env:
+          DATABASE_URL_DIRECT: ${{ secrets.DATABASE_URL_DIRECT }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          echo "=== Starting GitHub metrics sync ==="
+          echo "Time: $(date -u '+%Y-%m-%d %H:%M:%S UTC')"
+          uv run python -m workers.github.sync_metrics --budget 800
+          EXIT_CODE=$?
+          echo "sync_exit_code=$EXIT_CODE" >> "$GITHUB_OUTPUT"
+          if [ $EXIT_CODE -ne 0 ]; then
+            echo "::error::sync_metrics failed with exit code $EXIT_CODE"
+            exit $EXIT_CODE
+          fi
+          echo "=== Sync completed successfully ==="
+
+      # ── Step 2: Verify ingestion integrity ───────────────────────────────
+      - name: Verify ingestion integrity
+        env:
+          DATABASE_URL_DIRECT: ${{ secrets.DATABASE_URL_DIRECT }}
+        run: |
+          uv run python -c "
+          from sqlalchemy import text
+          from internetweather.db import worker_engine
+          import sys
+
+          e = worker_engine()
+          with e.begin() as c:
+              today = c.execute(text(\"SELECT CURRENT_DATE\")).scalar()
+              total = c.execute(text('SELECT COUNT(*) FROM repository')).scalar()
+              today_rows = c.execute(text(
+                  'SELECT COUNT(*) FROM repository_metric_daily WHERE day = CURRENT_DATE'
+              )).scalar()
+              dupes = c.execute(text('''
+                  SELECT repository_id, COUNT(*) as cnt
+                  FROM repository_metric_daily
+                  WHERE day = CURRENT_DATE
+                  GROUP BY repository_id
+                  HAVING COUNT(*) > 1
+              ''')).fetchall()
+
+              print(f'Today: {today}')
+              print(f'Total repositories: {total}')
+              print(f'Today rows: {today_rows}/{total}')
+
+              if today_rows < total:
+                  print(f'::warning::Only {today_rows}/{total} repos have today rows')
+              if dupes:
+                  print(f'::error::Duplicate rows found: {len(dupes)}')
+                  sys.exit(1)
+              print('Ingestion integrity: OK')
+          "
+
+      # ── Step 3: Detection ────────────────────────────────────────────────
+      - name: Compute signals
+        if: steps.sync.outputs.sync_exit_code == '0'
+        env:
+          DATABASE_URL_DIRECT: ${{ secrets.DATABASE_URL_DIRECT }}
+        run: |
+          echo "=== Starting signal computation ==="
+          echo "Time: $(date -u '+%Y-%m-%d %H:%M:%S UTC')"
+          uv run python -m workers.detection.compute_signals
+          EXIT_CODE=$?
+          if [ $EXIT_CODE -ne 0 ]; then
+            echo "::error::compute_signals failed with exit code $EXIT_CODE"
+            exit $EXIT_CODE
+          fi
+          echo "=== Detection completed successfully ==="
+
+      # ── Step 4: Verify detection output ──────────────────────────────────
+      - name: Verify detection output
+        if: steps.sync.outputs.sync_exit_code == '0'
+        env:
+          DATABASE_URL_DIRECT: ${{ secrets.DATABASE_URL_DIRECT }}
+        run: |
+          uv run python -c "
+          from sqlalchemy import text
+          from internetweather.db import worker_engine
+
+          e = worker_engine()
+          with e.begin() as c:
+              today = c.execute(text('SELECT CURRENT_DATE')).scalar()
+              techs = c.execute(text('SELECT COUNT(*) FROM technology WHERE is_active = true')).scalar()
+              signals = c.execute(text(
+                  'SELECT COUNT(*) FROM technology_signal_daily WHERE day = CURRENT_DATE'
+              )).fetchone()
+              sig_count = signals[0] if signals else 0
+              events = c.execute(text(
+                  'SELECT COUNT(*) FROM ecosystem_event WHERE occurred_on = CURRENT_DATE'
+              )).fetchone()
+              evt_count = events[0] if events else 0
+
+              print(f'Active technologies: {techs}')
+              print(f'Signals generated: {sig_count}/{techs}')
+              print(f'Events emitted: {evt_count}')
+
+              if sig_count < techs:
+                  print(f'::warning::Only {sig_count}/{techs} signals generated')
+              print('Detection verification: OK')
+          "
+
+      # ── Post-run: final rate limit status ────────────────────────────────
+      - name: Report final rate limit
+        if: always()
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          uv run python -c "
+          import httpx, os, datetime
+          token = os.environ.get('GITHUB_TOKEN', '')
+          if not token:
+              print('No GITHUB_TOKEN, skipping rate limit report')
+              exit(0)
+          headers = {'Authorization': f'token {token}'}
+          r = httpx.get('https://api.github.com/rate_limit', headers=headers, timeout=10)
+          if r.status_code == 200:
+              core = r.json()['resources']['core']
+              remaining = core['remaining']
+              reset = core['reset']
+              reset_dt = datetime.datetime.fromtimestamp(reset, tz=datetime.timezone.utc)
+              print(f'Final rate limit: {remaining} remaining, resets at {reset_dt.isoformat()}')
+          else:
+              print(f'Could not fetch rate limit: {r.status_code}')
+          "
+
+      # ── Upload logs ──────────────────────────────────────────────────────
+      - name: Upload pipeline log
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: pipeline-log-${{ github.run_number }}
+          path: /dev/null
+          retention-days: 7
+          if-no-files-found: ignore
