@@ -58,7 +58,7 @@ jobs:
       - name: Configure environment
         run: |
           echo "DATABASE_URL_DIRECT is set: ${{ secrets.DATABASE_URL_DIRECT != '' }}"
-          echo "GITHUB_TOKEN is set: ${{ secrets.GITHUB_TOKEN != '' }}"
+          echo "GH_PAT is set: ${{ secrets.GH_PAT != '' }}"
         # Do NOT echo the actual values
 
       # ── Pre-flight: rate-limit check ─────────────────────────────────────
@@ -90,7 +90,7 @@ jobs:
         id: sync
         env:
           DATABASE_URL_DIRECT: ${{ secrets.DATABASE_URL_DIRECT }}
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GH_PAT }}
         run: |
           echo "=== Starting GitHub metrics sync ==="
           echo "Time: $(date -u '+%Y-%m-%d %H:%M:%S UTC')"
@@ -192,7 +192,7 @@ jobs:
       - name: Report final rate limit
         if: always()
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GH_PAT }}
         run: |
           uv run python -c "
           import httpx, os, datetime
