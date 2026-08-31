@@ -63,6 +63,8 @@ jobs:
 
       # ── Pre-flight: rate-limit check ─────────────────────────────────────
       - name: Check GitHub rate limit
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_PAT }}
         run: |
           uv run python -c "
           import httpx, os, sys
