@@ -268,35 +268,39 @@ export default async function ResearchPage({ params }: { params: Promise<Params>
 
       {/* ── Sensors and relationships ─────────────────────────────────────── */}
       <div className="grid gap-4 lg:grid-cols-2">
-        <Panel
-          title="Sensors"
-          caption="Repositories observed for this technology"
-          right={
-            <span className="font-mono text-[10px] tabular-nums text-faint">
-              {sensors.length ? String(sensors.length).padStart(2, "0") : "—"}
-            </span>
-          }
-        >
-          <SensorTable sensors={sensors} emptyReason={emptyReason} />
-        </Panel>
+        <div className="overflow-x-auto min-w-0">
+          <Panel
+            title="Sensors"
+            caption="Repositories observed for this technology"
+            right={
+              <span className="font-mono text-[10px] tabular-nums text-faint">
+                {sensors.length ? String(sensors.length).padStart(2, "0") : "—"}
+              </span>
+            }
+          >
+            <SensorTable sensors={sensors} emptyReason={emptyReason} />
+          </Panel>
+        </div>
 
-        <Panel
-          title="Related"
-          caption="Curated and inferred edges"
-          right={
-            <span className="font-mono text-[10px] tabular-nums text-faint">
-              {relationships.ok && relationships.data.related.length
-                ? String(relationships.data.related.length).padStart(2, "0")
-                : "—"}
-            </span>
-          }
-        >
-          <RelatedTechnologies
-            related={relationships.ok ? relationships.data.related : []}
-            vocabulary={vocabulary.ok ? vocabulary.data : null}
-            emptyReason={relationships.ok ? emptyReason : relationships.error}
-          />
-        </Panel>
+        <div className="overflow-x-auto min-w-0">
+          <Panel
+            title="Related"
+            caption="Curated and inferred edges"
+            right={
+              <span className="font-mono text-[10px] tabular-nums text-faint">
+                {relationships.ok && relationships.data.related.length
+                  ? String(relationships.data.related.length).padStart(2, "0")
+                  : "—"}
+              </span>
+            }
+          >
+            <RelatedTechnologies
+              related={relationships.ok ? relationships.data.related : []}
+              vocabulary={vocabulary.ok ? vocabulary.data : null}
+              emptyReason={relationships.ok ? emptyReason : relationships.error}
+            />
+          </Panel>
+        </div>
       </div>
 
       {/* ── Events ────────────────────────────────────────────────────────── */}
