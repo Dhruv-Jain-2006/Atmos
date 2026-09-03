@@ -28,6 +28,12 @@ from internetweather.models import (
     Technology,
 )
 
+# Window sizes for velocity computation. Velocity must represent stars/day
+# over the *calendar* window, not per available observation. Dividing by the
+# window size gives a true rate even when data is sparse.
+VELOCITY_WINDOW_7 = 7
+VELOCITY_WINDOW_28 = 28
+
 # ---------------------------------------------------------------------------
 # Data structures
 # ---------------------------------------------------------------------------
@@ -68,9 +74,13 @@ class TechSignals:
     day: date
 
     # --- Levels ---
-    stars_total: int = 0
+    stars_total: int | None = None
     repo_count: int = 0
     active_repo_count: int = 0
+    #: Distinct calendar days where at least one repo had a non-NULL metric
+    #: (stars, commits, or releases).  This is the observation count, not a
+    #: window size.  Low values must lower confidence, never be dressed up as
+    #: EMERGING.
     sample_days: int = 0
 
     # --- Velocity ---
@@ -191,18 +201,19 @@ def compute_daily_weighted_deltas(
     repo_days: dict[int, dict[date, RepoDay]],
     window_start: date,
     window_end: date,
-) -> list[float]:
+) -> dict[date, float]:
     """Compute daily weighted star deltas for a date window.
 
-    Only includes days where at least one repo has a known delta.
-    Returns a list of daily weighted deltas (may be shorter than the window).
+    Returns a dict keyed by day so callers can filter by calendar window
+    (e.g. last 7 calendar days vs. last 7 available deltas).  Only days
+    where at least one repo has a known delta are included.
     """
-    deltas: list[float] = []
+    deltas: dict[date, float] = {}
     day = window_start
     while day <= window_end:
         delta, _ = _weighted_delta_on_day(repo_links, repo_days, day)
         if delta is not None:
-            deltas.append(delta)
+            deltas[day] = delta
         day += timedelta(days=1)
     return deltas
 
@@ -259,11 +270,20 @@ def compute_tech_signals(
     window_start = today - timedelta(days=window_days - 1)
 
     # --- Stars total (unweighted sum of live observations) ---
-    total_stars = 0
+    # None when no repo has a stars snapshot for today — distinct from 0 stars.
+    # Backfilled rows have NULL stars anyway, but guard explicitly: only
+    # non-backfilled rows with non-NULL stars contribute.
+    total_stars: int | None = None
     for link in repo_links:
         days = repo_days.get(link.repository_id, {})
         rd = days.get(today)
-        if rd is not None and rd.stars is not None:
+        if (
+            rd is not None
+            and rd.stars is not None
+            and not rd.is_backfilled
+        ):
+            if total_stars is None:
+                total_stars = 0
             total_stars += rd.stars
     signals.stars_total = total_stars
 
@@ -294,32 +314,40 @@ def compute_tech_signals(
                 break
     signals.active_repo_count = len(active_repos)
 
-    # --- Daily weighted deltas ---
-    all_deltas = compute_daily_weighted_deltas(
+    # --- Daily weighted deltas (date-keyed for calendar-window filtering) ---
+    all_delta_map = compute_daily_weighted_deltas(
         repo_links, repo_days, window_start, today
     )
+    all_deltas_values = list(all_delta_map.values())
 
     # --- Stars deltas (1d, 7d, 28d) ---
     # 1-day delta: most recent daily weighted delta
-    if all_deltas:
-        signals.stars_delta_1d = round(all_deltas[-1])
+    if all_deltas_values:
+        signals.stars_delta_1d = round(all_deltas_values[-1])
 
-    # 7-day delta: sum of last 7 daily deltas
-    recent_7 = all_deltas[-7:] if len(all_deltas) >= 1 else []
-    if len(recent_7) >= 1:
-        signals.stars_delta_7d = round(sum(recent_7))
+    # 7-day delta: sum of deltas from the last 7 *calendar* days
+    seven_start = today - timedelta(days=6)
+    deltas_7d = [d for day, d in all_delta_map.items() if day >= seven_start]
+    if deltas_7d:
+        signals.stars_delta_7d = round(sum(deltas_7d))
 
-    # 28-day delta: sum of all daily deltas in window
-    if all_deltas:
-        signals.stars_delta_28d = round(sum(all_deltas))
+    # 28-day delta: sum of all deltas in the full calendar window
+    if all_deltas_values:
+        signals.stars_delta_28d = round(sum(all_deltas_values))
 
-    # --- Star velocity (weighted stars/day) ---
+    # --- Star velocity (weighted stars/day over the *calendar* window) ---
+    # Velocity must represent true stars/day rate, not per available observation.
+    # Dividing by the window size (7 or 28) gives a correct rate even when data
+    # is sparse — sparse data means fewer stars were gained, not that time moved
+    # faster.
     if signals.stars_delta_7d is not None:
-        signals.star_velocity_7d = signals.stars_delta_7d / min(len(recent_7), 7)
+        signals.star_velocity_7d = signals.stars_delta_7d / VELOCITY_WINDOW_7
     if signals.stars_delta_28d is not None:
-        signals.star_velocity_28d = signals.stars_delta_28d / min(len(all_deltas), 28)
+        signals.star_velocity_28d = signals.stars_delta_28d / VELOCITY_WINDOW_28
 
     # --- Star acceleration ---
+    # Ratio of recent velocity to baseline velocity, logged.  Positive means
+    # "heating up", negative means "cooling down".
     eps = 0.05
     if signals.star_velocity_7d is not None and signals.star_velocity_28d is not None:
         v7 = max(signals.star_velocity_7d, 0.0) + eps
@@ -329,9 +357,11 @@ def compute_tech_signals(
             signals.star_acceleration = round(math.log(ratio), 6)
 
     # --- Anomaly z-score ---
-    if len(all_deltas) >= 7:
-        mu = mean(all_deltas)
-        sigma = stdev(all_deltas) if len(all_deltas) >= 2 else 0.0
+    # Uses *available* deltas (not calendar-window count) — you need at least
+    # 7 data points to compute a meaningful z-score.
+    if len(all_deltas_values) >= 7:
+        mu = mean(all_deltas_values)
+        sigma = stdev(all_deltas_values) if len(all_deltas_values) >= 2 else 0.0
         if signals.star_velocity_7d is not None and sigma > eps:
             signals.anomaly_z = round(
                 (signals.star_velocity_7d - mu) / sigma, 4

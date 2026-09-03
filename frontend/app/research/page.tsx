@@ -1,37 +1,58 @@
-import Link from "next/link";
+import { ResearchIndex } from "@/components/research/ResearchIndex";
+import { SIGNAL_REVALIDATE, VOCABULARY_REVALIDATE, getJson } from "@/lib/api";
+import type { TechnologyList, Vocabulary } from "@/lib/types";
 
 export const metadata = { title: "Research" };
 
-export default function ResearchIndexPage() {
-  return (
-    <section className="border border-edge bg-panel/50">
-      <header className="border-b border-edge px-5 py-2.5">
-        <h1 className="font-mono text-[11px] uppercase tracking-[0.28em] text-dim">
-          Research index
-        </h1>
-      </header>
+/**
+ * Research Index — discover and open technology research pages.
+ *
+ * Fetches the full technology universe in one server request.  The client
+ * component handles search, sort and interaction without additional calls.
+ */
+export default async function ResearchIndexPage() {
+  const [technologies, vocabulary] = await Promise.all([
+    getJson<TechnologyList>("/api/technologies?limit=200", SIGNAL_REVALIDATE),
+    getJson<Vocabulary>("/api/vocabulary", VOCABULARY_REVALIDATE),
+  ]);
 
-      <div className="px-5 py-12 text-center">
-        <p className="text-xl leading-tight font-medium tracking-tight text-ink sm:text-2xl">
-          Open a technology from Trends to reach its research page.
-        </p>
-        <p className="mt-3 mx-auto max-w-lg text-[12.5px] leading-relaxed text-faint">
-          Each technology has a dedicated research view with executive findings, signal
-          history, related technologies, evidence, and an investigation copilot.
-        </p>
-        <div className="mt-4 inline-flex items-center gap-1.5 rounded border border-edge px-2.5 py-1 font-mono text-[9px] uppercase tracking-[0.14em] text-ghost">
-          <span className="size-1 rounded-full bg-ghost" />
-          Research engine not yet wired
+  const techData = technologies.ok ? technologies.data : null;
+  const vocab = vocabulary.ok ? vocabulary.data : null;
+  const transportError = technologies.ok ? null : technologies.error;
+
+  return (
+    <div className="space-y-4">
+      {/* Header */}
+      <section className="border border-edge bg-panel/50">
+        <header className="border-b border-edge px-5 py-2.5">
+          <h1 className="font-mono text-[11px] uppercase tracking-[0.28em] text-dim">
+            Technology Research
+          </h1>
+        </header>
+        <div className="px-5 py-4">
+          <p className="max-w-2xl text-[13px] leading-relaxed text-faint">
+            Investigate the technologies Atmos is currently observing. Each has a
+            dedicated research view with executive findings, signal history,
+            related technologies, evidence, and an investigation copilot.
+          </p>
         </div>
-        <div className="mt-6">
-          <Link
-            href="/"
-            className="inline-flex items-center gap-2 rounded-sm border border-edge-lit bg-edge/40 px-3 py-1.5 font-mono text-[10px] uppercase tracking-[0.16em] text-ink transition-colors hover:bg-edge/70"
-          >
-            ← Back to trends
-          </Link>
-        </div>
-      </div>
-    </section>
+      </section>
+
+      {/* Index */}
+      <section className="border border-edge bg-panel/60 backdrop-blur-[1px]">
+        {transportError ? (
+          <div className="px-5 py-12 text-center">
+            <p className="font-mono text-[11px] uppercase tracking-[0.24em] text-dim">
+              API unavailable
+            </p>
+            <p className="mt-2 max-w-md mx-auto font-mono text-[11px] leading-relaxed text-faint">
+              {transportError}
+            </p>
+          </div>
+        ) : (
+          <ResearchIndex items={techData?.items ?? []} vocabulary={vocab} />
+        )}
+      </section>
+    </div>
   );
 }

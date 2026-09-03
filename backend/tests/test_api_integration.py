@@ -686,7 +686,9 @@ class TestTechnologyList:
     def test_ordering_by_stars(self, client):
         body = client.get("/api/technologies", params={"order": "stars"}).json()
         stars = [item["signals"]["stars_total"] for item in body["items"]]
-        assert stars == sorted(stars, reverse=True)
+        # None sorts last (NULLS LAST is default for DESC in PostgreSQL;
+        # handle explicitly for SQLite compatibility).
+        assert stars == sorted(stars, key=lambda s: (s is None, s or 0), reverse=True)
 
     def test_filter_by_state(self, client):
         body = client.get("/api/technologies", params={"state": "hot"}).json()

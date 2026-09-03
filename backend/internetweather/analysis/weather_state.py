@@ -78,7 +78,7 @@ class SignalInput:
     #: Coefficient of variation of daily star deltas.
     volatility: float | None = None
 
-    stars_total: int = 0
+    stars_total: int | None = None
     sample_days: int = 0
     repo_count: int = 0
     active_repo_count: int = 0
@@ -197,7 +197,7 @@ def _drivers(signals: SignalInput, star_ratio: float, momentum: float) -> list[D
 
 def _is_emerging_shape(signals: SignalInput) -> bool:
     """Young or small-based. EMERGING is about where it started, not how fast."""
-    small_base = signals.stars_total < EMERGING_MAX_STARS
+    small_base = signals.stars_total is not None and signals.stars_total < EMERGING_MAX_STARS
     young = signals.age_days is not None and signals.age_days <= EMERGING_MAX_AGE_DAYS
     return small_base or young
 

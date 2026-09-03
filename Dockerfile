@@ -8,11 +8,14 @@ COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
 # Copy dependency files first for layer caching
 COPY pyproject.toml uv.lock ./
 
-# Copy application code (needed for uv sync --no-install-project fails without it)
+# Copy application code
 COPY backend/ backend/
 COPY workers/ workers/
 COPY alembic.ini ./
 COPY db/ db/
+
+# Production startup script — reads PORT from Railway env
+COPY start.py ./
 
 # Install dependencies and project
 RUN uv sync --frozen --no-dev
@@ -22,5 +25,6 @@ ENV PYTHONPATH=/app
 
 EXPOSE 8000
 
-# Railway provides PORT env var; default to 8000
-CMD ["sh", "-c", "uv run uvicorn backend.internetweather.api.app:app --host 0.0.0.0 --port ${PORT:-8000}"]
+# Use the startup script.  It reads $PORT from the Railway environment
+# directly in Python, avoiding shell variable expansion issues.
+CMD ["uv", "run", "python", "start.py"]

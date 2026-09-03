@@ -52,7 +52,8 @@ class TechnologySignalDaily(Base):
     confidence: Mapped[float] = mapped_column(Float, nullable=False)
 
     # --- Attention signals ----------------------------------------------
-    stars_total: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
+    #: None when no stars snapshot is available for today.  Distinct from 0.
+    stars_total: Mapped[int | None] = mapped_column(Integer, nullable=True)
     stars_delta_1d: Mapped[int | None] = mapped_column(Integer)
     stars_delta_7d: Mapped[int | None] = mapped_column(Integer)
     stars_delta_28d: Mapped[int | None] = mapped_column(Integer)

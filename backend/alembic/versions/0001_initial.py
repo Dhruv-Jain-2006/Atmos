@@ -249,7 +249,7 @@ def upgrade() -> None:
         ),
         sa.Column("momentum", sa.Float(), nullable=False),
         sa.Column("confidence", sa.Float(), nullable=False),
-        sa.Column("stars_total", sa.Integer(), nullable=False),
+        sa.Column("stars_total", sa.Integer(), nullable=True),
         sa.Column("stars_delta_1d", sa.Integer(), nullable=True),
         sa.Column("stars_delta_7d", sa.Integer(), nullable=True),
         sa.Column("stars_delta_28d", sa.Integer(), nullable=True),

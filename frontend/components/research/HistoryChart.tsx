@@ -1,5 +1,5 @@
 import { NoObservation } from "@/components/instrument/NoObservation";
-import { decimal, isoDate, signed } from "@/lib/format";
+import { compact, decimal, isoDate, signed } from "@/lib/format";
 import type { HistoryPoint, Vocabulary } from "@/lib/types";
 import { lookup } from "@/lib/vocabulary";
 
@@ -209,7 +209,7 @@ export function HistoryChart({ points, vocabulary, emptyReason }: Props) {
               {`${isoDate(point.day)} · ${vocab.stateLabel(point.weather_state)}`
                 + `\nmomentum ${signed(point.momentum, 3)}`
                 + `\nvelocity ${decimal(point.star_velocity_7d, 1)} stars/day`
-                + `\nstars ${point.stars_total.toLocaleString("en-US")}`
+                + `\nstars ${compact(point.stars_total)}`
                 + `\nconfidence ${Math.round(point.confidence * 100)}%`}
             </title>
           </rect>

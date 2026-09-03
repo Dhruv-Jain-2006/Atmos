@@ -25,7 +25,13 @@ class SignalSnapshot(Schema):
 
     momentum: float = Field(description="Normalised -1..1 composite. Positive = accelerating.")
     confidence: float = Field(ge=0, le=1)
-    stars_total: int
+    stars_total: int | None = Field(
+        default=None,
+        description=(
+            "Sum of live star counts across linked repos. "
+            "None when no snapshot is available."
+        ),
+    )
     stars_delta_7d: int | None = None
     stars_delta_28d: int | None = None
     star_velocity_7d: float | None = Field(
@@ -133,7 +139,7 @@ class HistoryPoint(Schema):
     weather_state: WeatherState
     momentum: float
     confidence: float
-    stars_total: int
+    stars_total: int | None = None
     stars_delta_1d: int | None = None
     star_velocity_7d: float | None = None
     activity_score: float | None = None
