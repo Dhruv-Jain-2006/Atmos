@@ -340,6 +340,21 @@ def compute_signals(
         if target_day is None:
             target_day = datetime.now(UTC).date()
 
+        # If no metric rows exist for target_day, fall back to the latest
+        # day that has actual metric data.  This prevents computing signals
+        # against empty data when sync_metrics hasn't written today's rows
+        # (e.g. all repos' next_sync_after hasn't elapsed yet).
+        latest_metric_day = session.scalar(
+            select(func.max(RepositoryMetricDaily.day))
+        )
+        if latest_metric_day is not None and latest_metric_day < target_day:
+            log.info(
+                "no metrics for %s, falling back to latest metric day %s",
+                target_day,
+                latest_metric_day,
+            )
+            target_day = latest_metric_day
+
         # Load 28 days of metrics for the full baseline, regardless of the
         # recompute window.  The classifier and aggregation functions need
         # 28-day velocity and anomaly baselines that span beyond the trailing

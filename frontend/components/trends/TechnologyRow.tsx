@@ -54,7 +54,18 @@ export function TechnologyRow({ card, vocabulary, index }: Props) {
     openTimer.current = setTimeout(() => {
       if (triggerRef.current) {
         const rect = triggerRef.current.getBoundingClientRect();
-        setPos({ top: rect.top, left: rect.right + 10 });
+        const panelW = 340;
+        const gap = 10;
+        const vw = window.innerWidth;
+        const vh = window.innerHeight;
+        const panelH = 380;
+        let left = rect.right + gap;
+        if (left + panelW > vw) left = rect.left - panelW - gap;
+        if (left < 0) left = Math.max(0, rect.left - panelW - gap);
+        let top = rect.top;
+        if (top + panelH > vh) top = Math.max(0, vh - panelH - 8);
+        if (top < 0) top = 0;
+        setPos({ top, left });
       }
       setOpen(true);
     }, 90);
