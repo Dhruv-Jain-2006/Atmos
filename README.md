@@ -41,19 +41,6 @@ Weather states are **computed from measured signals**, never assigned by hand.
 
 ---
 
-## Tech Stack
-
-| Layer | Technology |
-|-------|-----------|
-| Frontend | Next.js 16, React 19, TypeScript, Tailwind CSS |
-| Backend API | FastAPI, Pydantic, SQLAlchemy |
-| Database | PostgreSQL (Neon) |
-| Workers | Python 3.14, httpx, tenacity, NumPy |
-| Migrations | Alembic |
-| CI/CD | GitHub Actions, Railway, Vercel |
-
-**Cost: $0** — built entirely on free-tier infrastructure.
-
 ---
 
 ## Project Structure
