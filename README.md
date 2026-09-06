@@ -1,4 +1,4 @@
-# Atmos
+# Atmos [![GitHub](https://img.shields.io/badge/GitHub-100000?style=flat&logo=github&logoColor=white)](https://github.com/Dhruv-Jain-2006/Atmos)
 
 A continuously updated technology-intelligence platform observing the AI engineering ecosystem.
 
