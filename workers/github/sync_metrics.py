@@ -468,6 +468,7 @@ def sync_metrics(
             }
 
             attempted = succeeded = failed = backfilled = incremental = 0
+            processed_repo_ids: set[int] = set()
             for _idx, repo in enumerate(repositories):
                 if attempted >= budget:
                     break
@@ -527,6 +528,7 @@ def sync_metrics(
                     repo.next_sync_after = _compute_next_sync(
                         changes_detected=changes_detected,
                     )
+                    processed_repo_ids.add(repo.id)
                     succeeded += 1
 
                 except QuotaExhausted:
@@ -542,20 +544,66 @@ def sync_metrics(
                     failed += 1
                     log.error("failed to sync %s: %s", full_name, exc)
 
+            # --- Stale snapshot: write today's row for repos not synced ---
+            # If next_sync_after hasn't elapsed for some repos, they won't be
+            # in `repositories` and won't get a metric row for today.  This
+            # breaks compute_signals (no data for target_day → falls back).
+            # Fix: write a row with last-known values so the day always exists.
+            stale = 0
+            all_active = list(
+                session.scalars(
+                    select(Repository).where(
+                        Repository.tracking_state == "active",
+                        Repository.id.notin_(processed_repo_ids),
+                    )
+                )
+            )
+            for repo in all_active:
+                if repo.id in processed_repo_ids:
+                    continue
+                already = session.scalar(
+                    select(RepositoryMetricDaily).where(
+                        RepositoryMetricDaily.repository_id == repo.id,
+                        RepositoryMetricDaily.day == today,
+                    )
+                )
+                if already is not None:
+                    continue
+                stale_metrics = MetricResult(
+                    stars=repo.stars,
+                    forks=repo.forks,
+                    watchers=repo.watchers,
+                    open_issues=repo.open_issues,
+                    commits=None,
+                    releases=None,
+                    contributors_active=None,
+                )
+                created = upsert_daily_metric(
+                    session, repo.id, today, stale_metrics, is_backfilled=False,
+                )
+                if created:
+                    stale += 1
+                    # Compute delta against yesterday
+                    _apply_deltas(session, repo.id, today, stale_metrics, all_metrics)
+
+            if stale:
+                log.info("wrote %d stale snapshot rows for repos not yet due", stale)
+
             run_stats.records_read = stats.records_read
-            run_stats.records_written = backfilled + incremental
+            run_stats.records_written = backfilled + incremental + stale
             run_stats.cursor = {
                 "attempted": attempted,
                 "succeeded": succeeded,
                 "failed": failed,
                 "backfilled_days": backfilled,
                 "incremental_writes": incremental,
+                "stale_snapshots": stale,
             }
 
             log.info(
                 "sync_metrics done: attempted=%d succeeded=%d failed=%d "
-                "backfilled=%d incremental=%d",
-                attempted, succeeded, failed, backfilled, incremental,
+                "backfilled=%d incremental=%d stale=%d",
+                attempted, succeeded, failed, backfilled, incremental, stale,
             )
 
 
