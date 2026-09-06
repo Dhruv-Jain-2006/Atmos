@@ -284,8 +284,3 @@ Runs on a cron schedule at `12:15 UTC` (5:45 PM IST). Can be triggered manually 
 4. **The frontend never talks to external APIs.** Everything goes through Atmos's normalized API.
 5. **Free tier by design.** Neon, Vercel, Railway, GitHub Actions — $0/month at portfolio scale.
 
----
-
-## License
-
-MIT
