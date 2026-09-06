@@ -4,7 +4,7 @@ A continuously updated technology-intelligence platform observing the AI enginee
 
 Atmos watches the public internet for meaningful changes in the AI landscape, detects shifts in technology momentum, and produces evidence-backed insights — not dashboards, not news feeds, not chatbots.
 
-**Live demo:** [atmos-mu.vercel.app](https://atmos-mu.vercel.app)
+**Live demo:** [atmoswebapp.vercel.app](https://atmoswebapp.vercel.app)
 
 ---
 
